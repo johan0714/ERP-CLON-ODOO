@@ -12,7 +12,7 @@ class PartnerBase(BaseModel):
     vat: Optional[str] = None
     street: Optional[str] = None
     city: Optional[str] = None
-    country: str = "España"
+    country: str = "Colombia"
     is_customer: bool = True
     is_supplier: bool = False
     comment: Optional[str] = None
@@ -100,7 +100,7 @@ class SaleOrderLineCreate(BaseModel):
     name: Optional[str] = None
     product_uom_qty: float = 1.0
     price_unit: float
-    tax_percent: float = 21.0
+    tax_percent: float = 19.0
 
 
 class SaleOrderLineOut(BaseModel):

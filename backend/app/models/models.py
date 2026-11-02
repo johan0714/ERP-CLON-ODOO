@@ -57,7 +57,7 @@ class ResPartner(Base):
     vat = Column(String(64), nullable=True)  # Tax ID / CIF / RUT / RFC
     street = Column(String(255), nullable=True)
     city = Column(String(128), nullable=True)
-    country = Column(String(64), default="España")
+    country = Column(String(64), default="Colombia")
     is_customer = Column(Boolean, default=True)
     is_supplier = Column(Boolean, default=False)
     active = Column(Boolean, default=True)
@@ -154,7 +154,7 @@ class SaleOrderLine(Base):
     qty_delivered = Column(Float, default=0.0)
     qty_invoiced = Column(Float, default=0.0)
     price_unit = Column(Float, default=0.0)
-    tax_percent = Column(Float, default=21.0)
+    tax_percent = Column(Float, default=19.0)
     price_subtotal = Column(Float, default=0.0)
     price_total = Column(Float, default=0.0)
 
@@ -200,7 +200,7 @@ class AccountMoveLine(Base):
     name = Column(String(255), nullable=False)
     quantity = Column(Float, default=1.0)
     price_unit = Column(Float, default=0.0)
-    tax_percent = Column(Float, default=21.0)
+    tax_percent = Column(Float, default=19.0)
     price_subtotal = Column(Float, default=0.0)
     price_total = Column(Float, default=0.0)
 

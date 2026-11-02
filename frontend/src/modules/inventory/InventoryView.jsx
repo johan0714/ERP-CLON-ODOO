@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/client';
 import ControlPanel from '../../components/ControlPanel';
+import { formatCOP } from '../../utils/format';
 import { Package, Truck, CheckCircle2, Clock, Plus, X, AlertTriangle } from 'lucide-react';
 
 export default function InventoryView({ subView = 'products' }) {
@@ -181,11 +182,11 @@ export default function InventoryView({ subView = 'products' }) {
                     <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
                       <div>
                         <span className="text-slate-400 block text-[10px] uppercase font-bold">Venta</span>
-                        <span className="font-black text-slate-900 text-sm">€ {p.list_price.toFixed(2)}</span>
+                        <span className="font-black text-slate-900 text-sm">{formatCOP(p.list_price)}</span>
                       </div>
                       <div className="text-right">
                         <span className="text-slate-400 block text-[10px] uppercase font-bold">Coste</span>
-                        <span className="text-slate-600 font-semibold">€ {p.standard_price.toFixed(2)}</span>
+                        <span className="text-slate-600 font-semibold">{formatCOP(p.standard_price)}</span>
                       </div>
                     </div>
                   </div>
@@ -211,8 +212,8 @@ export default function InventoryView({ subView = 'products' }) {
                       <td className="py-3 px-4 font-mono text-xs text-slate-500">{p.default_code || '-'}</td>
                       <td className="py-3 px-4 font-semibold text-slate-900">{p.name}</td>
                       <td className="py-3 px-4 text-xs text-slate-500 capitalize">{p.type === 'product' ? 'Almacenable' : 'Servicio'}</td>
-                      <td className="py-3 px-4 text-right font-bold text-slate-900">€ {p.list_price.toFixed(2)}</td>
-                      <td className="py-3 px-4 text-right text-slate-600">€ {p.standard_price.toFixed(2)}</td>
+                      <td className="py-3 px-4 text-right font-bold text-slate-900">{formatCOP(p.list_price)}</td>
+                      <td className="py-3 px-4 text-right text-slate-600">{formatCOP(p.standard_price)}</td>
                       <td className="py-3 px-4 text-right font-black">
                         <span className={p.qty_available <= 0 ? 'text-red-600' : 'text-emerald-700'}>
                           {p.qty_available} {p.uom_name}
@@ -346,10 +347,10 @@ export default function InventoryView({ subView = 'products' }) {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">Precio Venta (€)</label>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Precio Venta (COP $)</label>
                   <input
                     type="number"
-                    step="0.01"
+                    step="1"
                     required
                     value={productForm.list_price}
                     onChange={(e) => setProductForm({ ...productForm, list_price: parseFloat(e.target.value) || 0 })}
@@ -357,10 +358,10 @@ export default function InventoryView({ subView = 'products' }) {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">Coste (€)</label>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Coste (COP $)</label>
                   <input
                     type="number"
-                    step="0.01"
+                    step="1"
                     value={productForm.standard_price}
                     onChange={(e) => setProductForm({ ...productForm, standard_price: parseFloat(e.target.value) || 0 })}
                     className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-[#714B67]"

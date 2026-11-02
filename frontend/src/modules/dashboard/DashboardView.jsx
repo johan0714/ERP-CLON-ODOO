@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../api/client';
+import { formatCOP } from '../../utils/format';
 import {
   TrendingUp,
   Package,
@@ -43,7 +44,7 @@ export default function DashboardView({ onNavigateApp, onNewOrder, onNewContact,
   const cards = [
     {
       title: 'Ventas Totales',
-      value: `€ ${metrics.total_sales.toLocaleString('es-ES', { minimumFractionDigits: 2 })}`,
+      value: formatCOP(metrics.total_sales),
       subtitle: `${metrics.confirmed_orders_count} pedidos confirmados`,
       icon: TrendingUp,
       color: 'bg-indigo-50 border-indigo-200 text-indigo-700',
@@ -52,7 +53,7 @@ export default function DashboardView({ onNavigateApp, onNewOrder, onNewContact,
     },
     {
       title: 'Facturación Pendiente',
-      value: `€ ${metrics.unpaid_invoices_amount.toLocaleString('es-ES', { minimumFractionDigits: 2 })}`,
+      value: formatCOP(metrics.unpaid_invoices_amount),
       subtitle: `${metrics.unpaid_invoices_count} facturas por cobrar`,
       icon: Receipt,
       color: 'bg-emerald-50 border-emerald-200 text-emerald-700',

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/client';
 import ControlPanel from '../../components/ControlPanel';
+import { formatCOP } from '../../utils/format';
 import {
   FileText,
   Truck,
@@ -30,7 +31,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice }) {
     partner_id: '',
     note: '',
     lines: [
-      { product_id: '', name: '', product_uom_qty: 1, price_unit: 0, tax_percent: 21 },
+      { product_id: '', name: '', product_uom_qty: 1, price_unit: 0, tax_percent: 19 },
     ],
   });
 
@@ -86,7 +87,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice }) {
           name: products.length > 0 ? products[0].name : '',
           product_uom_qty: 1,
           price_unit: products.length > 0 ? products[0].list_price : 0,
-          tax_percent: 21,
+          tax_percent: 19,
         },
       ],
     });
@@ -103,7 +104,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice }) {
           name: defaultProd ? defaultProd.name : '',
           product_uom_qty: 1,
           price_unit: defaultProd ? defaultProd.list_price : 0,
-          tax_percent: 21,
+          tax_percent: 19,
         },
       ],
     });
@@ -323,7 +324,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice }) {
                               >
                                 {products.map((p) => (
                                   <option key={p.id} value={p.id}>
-                                    {p.name} (€ {p.list_price.toFixed(2)})
+                                    {p.name} ({formatCOP(p.list_price)})
                                   </option>
                                 ))}
                               </select>
@@ -341,7 +342,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice }) {
                             <td className="py-2 px-3">
                               <input
                                 type="number"
-                                step="0.01"
+                                step="1"
                                 value={line.price_unit}
                                 onChange={(e) => handleLinePriceChange(idx, e.target.value)}
                                 className="w-full text-right py-1 px-2 border border-slate-300 rounded text-xs"
@@ -351,7 +352,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice }) {
                               {line.tax_percent}%
                             </td>
                             <td className="py-2 px-3 text-right font-bold text-slate-900">
-                              € {lineSub.toFixed(2)}
+                              {formatCOP(lineSub)}
                             </td>
                             <td className="py-2 px-2 text-center">
                               {newOrderData.lines.length > 1 && (
@@ -376,15 +377,15 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice }) {
                   <div className="w-64 space-y-1.5 text-xs">
                     <div className="flex justify-between text-slate-600">
                       <span>Base Imponible:</span>
-                      <span className="font-semibold">€ {calculateNewOrderTotals().untaxed.toFixed(2)}</span>
+                      <span className="font-semibold">{formatCOP(calculateNewOrderTotals().untaxed)}</span>
                     </div>
                     <div className="flex justify-between text-slate-600">
-                      <span>Impuestos (21%):</span>
-                      <span className="font-semibold">€ {calculateNewOrderTotals().tax.toFixed(2)}</span>
+                      <span>IVA (19%):</span>
+                      <span className="font-semibold">{formatCOP(calculateNewOrderTotals().tax)}</span>
                     </div>
                     <div className="flex justify-between text-sm font-black text-slate-900 pt-2 border-t border-slate-200">
                       <span>Total:</span>
-                      <span className="text-[#714B67]">€ {calculateNewOrderTotals().total.toFixed(2)}</span>
+                      <span className="text-[#714B67]">{formatCOP(calculateNewOrderTotals().total)}</span>
                     </div>
                   </div>
                 </div>
@@ -547,9 +548,9 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice }) {
                           <td className="py-2.5 px-3 text-right font-bold">{l.product_uom_qty}</td>
                           <td className="py-2.5 px-3 text-right font-semibold text-amber-700">{l.qty_delivered}</td>
                           <td className="py-2.5 px-3 text-right font-semibold text-emerald-700">{l.qty_invoiced}</td>
-                          <td className="py-2.5 px-3 text-right">€ {l.price_unit.toFixed(2)}</td>
+                          <td className="py-2.5 px-3 text-right">{formatCOP(l.price_unit)}</td>
                           <td className="py-2.5 px-3 text-right font-bold text-slate-900">
-                            € {l.price_subtotal.toFixed(2)}
+                            {formatCOP(l.price_subtotal)}
                           </td>
                         </tr>
                       ))}
@@ -562,15 +563,15 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice }) {
                   <div className="w-64 space-y-1.5 text-xs">
                     <div className="flex justify-between text-slate-600">
                       <span>Base Imponible:</span>
-                      <span className="font-semibold">€ {selectedOrder.amount_untaxed.toFixed(2)}</span>
+                      <span className="font-semibold">{formatCOP(selectedOrder.amount_untaxed)}</span>
                     </div>
                     <div className="flex justify-between text-slate-600">
-                      <span>IVA (21%):</span>
-                      <span className="font-semibold">€ {selectedOrder.amount_tax.toFixed(2)}</span>
+                      <span>IVA (19%):</span>
+                      <span className="font-semibold">{formatCOP(selectedOrder.amount_tax)}</span>
                     </div>
                     <div className="flex justify-between text-base font-black text-slate-900 pt-2 border-t border-slate-200">
                       <span>Total:</span>
-                      <span className="text-[#714B67]">€ {selectedOrder.amount_total.toFixed(2)}</span>
+                      <span className="text-[#714B67]">{formatCOP(selectedOrder.amount_total)}</span>
                     </div>
                   </div>
                 </div>
@@ -612,7 +613,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice }) {
                         {new Date(o.date_order).toLocaleDateString()}
                       </td>
                       <td className="py-3 px-4 text-right font-black text-slate-900">
-                        € {o.amount_total.toFixed(2)}
+                        {formatCOP(o.amount_total)}
                       </td>
                       <td className="py-3 px-4 text-center">
                         <span

@@ -119,7 +119,7 @@ export default function LoginView({ onLoginSuccess }) {
               <div className="text-[11px] text-slate-700 font-semibold truncate">Pedro Albarracín</div>
               <div className="text-[10px] text-slate-400 flex items-center space-x-1 mt-0.5">
                 <MapPin className="w-3 h-3 text-red-500 shrink-0" />
-                <span>Madrid (Central)</span>
+                <span>Bogotá D.C. (Sede Central)</span>
               </div>
             </button>
 
@@ -136,7 +136,7 @@ export default function LoginView({ onLoginSuccess }) {
               <div className="text-[11px] text-slate-700 font-semibold truncate">Laura Gómez</div>
               <div className="text-[10px] text-slate-400 flex items-center space-x-1 mt-0.5">
                 <MapPin className="w-3 h-3 text-emerald-500 shrink-0" />
-                <span>Barcelona (Sucursal)</span>
+                <span>Medellín (Sucursal)</span>
               </div>
             </button>
           </div>

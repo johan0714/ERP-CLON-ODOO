@@ -8,14 +8,14 @@ def run_seed():
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
 
-    # 0. Usuarios para acceso remoto inter-ciudades
+    # 0. Usuarios para acceso remoto inter-ciudades (Colombia)
     if db.query(ResUser).count() == 0:
         admin_user = ResUser(
             name="Pedro Albarracín (Admin)",
             email="admin@empresa.com",
             hashed_password=hash_password("admin123"),
             role="admin",
-            city="Madrid (Central)",
+            city="Bogotá D.C. (Sede Central)",
             avatar_color="bg-[#714B67]"
         )
         emp_user = ResUser(
@@ -23,7 +23,7 @@ def run_seed():
             email="empleado@empresa.com",
             hashed_password=hash_password("empleado123"),
             role="employee",
-            city="Barcelona (Sucursal)",
+            city="Medellín (Sucursal)",
             avatar_color="bg-emerald-600"
         )
         db.add_all([admin_user, emp_user])
@@ -43,61 +43,61 @@ def run_seed():
         if not existing:
             db.add(IrSequence(**s_data))
 
-    # 2. Contactos / Clientes / Proveedores
+    # 2. Contactos / Clientes / Proveedores (Colombia)
     if db.query(ResPartner).count() == 0:
         partners = [
             ResPartner(
-                name="Tecnología & Redes Globales S.A.",
+                name="Grupo Colombia Soluciones S.A.S.",
                 is_company=True,
-                email="compras@tecglobal.com",
-                phone="+34 912 345 678",
-                vat="B87654321",
-                street="Avenida Gran Vía 45, Planta 4",
-                city="Madrid",
-                country="España",
+                email="contacto@colombiasoluciones.com",
+                phone="+57 601 745 8900",
+                vat="901.458.789-2",
+                street="Carrera 7 # 72-13, Torre Empresarial",
+                city="Bogotá D.C.",
+                country="Colombia",
                 is_customer=True,
                 is_supplier=False,
-                comment="Cliente VIP corporativo"
+                comment="Cliente corporativo principal"
             ),
             ResPartner(
-                name="Distribuidora Ibérica de Hardware",
+                name="Distribuidora Tecnológica de Antioquia S.A.S.",
                 is_company=True,
-                email="ventas@distriiberica.es",
-                phone="+34 933 112 233",
-                vat="A12345678",
-                street="Polígono Industrial Sur, Nave 12",
-                city="Barcelona",
-                country="España",
+                email="ventas@distriantioquia.com.co",
+                phone="+57 604 444 1234",
+                vat="890.123.456-7",
+                street="Calle 10 # 43E-20, El Poblado",
+                city="Medellín",
+                country="Colombia",
                 is_customer=False,
                 is_supplier=True,
-                comment="Proveedor principal de periféricos"
+                comment="Proveedor mayorista de hardware"
             ),
             ResPartner(
-                name="Carlos Morales (Diseño Web)",
+                name="Carlos Morales (Consultor Freelance)",
                 is_company=False,
-                email="carlos.morales@freelance.io",
-                phone="+34 600 987 654",
-                vat="53421190K",
-                street="Calle Mayor 12",
-                city="Valencia",
-                country="España",
+                email="carlos.morales@techcolombia.co",
+                phone="+57 310 987 6543",
+                vat="1.020.345.678",
+                street="Avenida San Martín # 5-40",
+                city="Cali",
+                country="Colombia",
                 is_customer=True,
                 is_supplier=False,
-                comment="Desarrollador independiente"
+                comment="Desarrollador y consultor independiente"
             ),
         ]
         db.add_all(partners)
         db.commit()
 
-    # 3. Productos y Servicios
+    # 3. Productos y Servicios en Pesos Colombianos (COP)
     if db.query(ProductProduct).count() == 0:
         products = [
             ProductProduct(
                 name="Laptop Ultrabook Pro 15\"",
                 default_code="LAP-ULTRA-15",
                 type="product",
-                list_price=1250.00,
-                standard_price=850.00,
+                list_price=4500000.0,
+                standard_price=3200000.0,
                 qty_available=15.0,
                 uom_name="Unidades",
                 description="Portátil empresarial Intel i7, 32GB RAM, 1TB SSD NVMe",
@@ -107,8 +107,8 @@ def run_seed():
                 name="Monitor Curvo 27\" UltraHD",
                 default_code="MON-27-UHD",
                 type="product",
-                list_price=340.00,
-                standard_price=220.00,
+                list_price=1250000.0,
+                standard_price=850000.0,
                 qty_available=28.0,
                 uom_name="Unidades",
                 description="Panel IPS 144Hz, HDR400, conexiones HDMI 2.1 y DisplayPort",
@@ -118,19 +118,19 @@ def run_seed():
                 name="Teclado Mecánico Ergonómico",
                 default_code="KB-MECH-ERG",
                 type="product",
-                list_price=115.00,
-                standard_price=65.00,
+                list_price=350000.0,
+                standard_price=180000.0,
                 qty_available=45.0,
                 uom_name="Unidades",
-                description="Switches táctiles silenciosos, retroiluminación personalizable",
+                description="Switches táctiles silenciosos, retroiluminación RGB",
                 image_url="https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400"
             ),
             ProductProduct(
-                name="Consultoría e Instalación IT",
+                name="Consultoría e Instalación IT (Hora)",
                 default_code="SRV-CONSULT-IT",
                 type="service",
-                list_price=80.00,
-                standard_price=45.00,
+                list_price=150000.0,
+                standard_price=80000.0,
                 qty_available=0.0,
                 uom_name="Horas",
                 description="Servicio técnico especializado por horas"
@@ -139,7 +139,7 @@ def run_seed():
         db.add_all(products)
         db.commit()
 
-    # 4. Crear una orden de venta de ejemplo ya cargada
+    # 4. Crear una orden de venta de ejemplo ya cargada en COP
     partner_demo = db.query(ResPartner).filter(ResPartner.is_customer == True).first()
     prod_laptop = db.query(ProductProduct).filter(ProductProduct.default_code == "LAP-ULTRA-15").first()
     prod_monitor = db.query(ProductProduct).filter(ProductProduct.default_code == "MON-27-UHD").first()
@@ -151,10 +151,10 @@ def run_seed():
             state="draft",
             invoice_status="no",
             delivery_status="pending",
-            amount_untaxed=1590.00,
-            amount_tax=333.90,
-            amount_total=1923.90,
-            note="Presupuesto para renovación de equipo directivo."
+            amount_untaxed=5750000.0,
+            amount_tax=1092500.0,
+            amount_total=6842500.0,
+            note="Presupuesto para renovación de equipo tecnológico corporativo. Precios en COP (IVA 19%)."
         )
         db.add(so)
         db.flush()
@@ -164,26 +164,26 @@ def run_seed():
             product_id=prod_laptop.id,
             name=prod_laptop.name,
             product_uom_qty=1.0,
-            price_unit=1250.00,
-            tax_percent=21.0,
-            price_subtotal=1250.00,
-            price_total=1512.50
+            price_unit=4500000.0,
+            tax_percent=19.0,
+            price_subtotal=4500000.0,
+            price_total=5355000.0
         )
         sol2 = SaleOrderLine(
             order_id=so.id,
             product_id=prod_monitor.id,
             name=prod_monitor.name,
             product_uom_qty=1.0,
-            price_unit=340.00,
-            tax_percent=21.0,
-            price_subtotal=340.00,
-            price_total=411.40
+            price_unit=1250000.0,
+            tax_percent=19.0,
+            price_subtotal=1250000.0,
+            price_total=1487500.0
         )
         db.add_all([sol1, sol2])
         db.commit()
 
     db.close()
-    print("Seed data cargada con éxito!")
+    print("Seed data colombiana (COP) cargada con éxito!")
 
 if __name__ == "__main__":
     run_seed()

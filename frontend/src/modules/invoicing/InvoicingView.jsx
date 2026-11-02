@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/client';
 import ControlPanel from '../../components/ControlPanel';
+import { formatCOP } from '../../utils/format';
 import { Receipt, CheckCircle, CreditCard, ArrowLeft, X, DollarSign, Calendar } from 'lucide-react';
 
 export default function InvoicingView({ defaultInvoiceId = null }) {
@@ -237,10 +238,10 @@ export default function InvoicingView({ defaultInvoiceId = null }) {
                         <tr key={il.id}>
                           <td className="py-2.5 px-3 font-semibold text-slate-800">{il.name}</td>
                           <td className="py-2.5 px-3 text-right font-bold">{il.quantity}</td>
-                          <td className="py-2.5 px-3 text-right">€ {il.price_unit.toFixed(2)}</td>
+                          <td className="py-2.5 px-3 text-right">{formatCOP(il.price_unit)}</td>
                           <td className="py-2.5 px-3 text-right text-slate-500">{il.tax_percent}%</td>
                           <td className="py-2.5 px-3 text-right font-bold text-slate-900">
-                            € {il.price_subtotal.toFixed(2)}
+                            {formatCOP(il.price_subtotal)}
                           </td>
                         </tr>
                       ))}
@@ -253,19 +254,19 @@ export default function InvoicingView({ defaultInvoiceId = null }) {
                   <div className="w-72 space-y-1.5 text-xs">
                     <div className="flex justify-between text-slate-600">
                       <span>Base Imponible:</span>
-                      <span className="font-semibold">€ {selectedInvoice.amount_untaxed.toFixed(2)}</span>
+                      <span className="font-semibold">{formatCOP(selectedInvoice.amount_untaxed)}</span>
                     </div>
                     <div className="flex justify-between text-slate-600">
-                      <span>IVA (21%):</span>
-                      <span className="font-semibold">€ {selectedInvoice.amount_tax.toFixed(2)}</span>
+                      <span>IVA (19%):</span>
+                      <span className="font-semibold">{formatCOP(selectedInvoice.amount_tax)}</span>
                     </div>
                     <div className="flex justify-between text-sm font-black text-slate-900 pt-2 border-t border-slate-200">
                       <span>Total Factura:</span>
-                      <span className="text-[#714B67]">€ {selectedInvoice.amount_total.toFixed(2)}</span>
+                      <span className="text-[#714B67]">{formatCOP(selectedInvoice.amount_total)}</span>
                     </div>
                     <div className="flex justify-between text-sm font-bold text-red-600 pt-1">
                       <span>Importe Pendiente:</span>
-                      <span>€ {selectedInvoice.amount_residual.toFixed(2)}</span>
+                      <span>{formatCOP(selectedInvoice.amount_residual)}</span>
                     </div>
                   </div>
                 </div>
@@ -294,7 +295,7 @@ export default function InvoicingView({ defaultInvoiceId = null }) {
                             <td className="py-2 px-3 capitalize text-slate-600">{p.payment_method}</td>
                             <td className="py-2 px-3 text-slate-500">{p.memo || '-'}</td>
                             <td className="py-2 px-3 text-right font-bold text-emerald-700">
-                              € {p.amount.toFixed(2)}
+                              {formatCOP(p.amount)}
                             </td>
                           </tr>
                         ))}
@@ -340,10 +341,10 @@ export default function InvoicingView({ defaultInvoiceId = null }) {
                       <td className="py-3 px-4 text-xs text-slate-500">{inv.invoice_date}</td>
                       <td className="py-3 px-4 font-mono text-xs text-indigo-700">{inv.invoice_origin || '-'}</td>
                       <td className="py-3 px-4 text-right font-black text-slate-900">
-                        € {inv.amount_total.toFixed(2)}
+                        {formatCOP(inv.amount_total)}
                       </td>
                       <td className="py-3 px-4 text-right font-bold text-red-600">
-                        € {inv.amount_residual.toFixed(2)}
+                        {formatCOP(inv.amount_residual)}
                       </td>
                       <td className="py-3 px-4 text-center">
                         <span
@@ -396,10 +397,10 @@ export default function InvoicingView({ defaultInvoiceId = null }) {
 
             <form onSubmit={handleRegisterPayment} className="space-y-4 text-sm">
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Importe a Cobrar (€) *</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">Importe a Cobrar (COP $) *</label>
                 <input
                   type="number"
-                  step="0.01"
+                  step="1"
                   max={selectedInvoice?.amount_residual}
                   required
                   value={paymentForm.amount}
@@ -407,7 +408,7 @@ export default function InvoicingView({ defaultInvoiceId = null }) {
                   className="w-full px-3 py-1.5 border border-slate-300 rounded font-bold text-lg text-slate-900 focus:ring-1 focus:ring-[#714B67]"
                 />
                 <span className="text-[11px] text-slate-400 mt-0.5 block">
-                  Máximo pendiente: € {selectedInvoice?.amount_residual.toFixed(2)}
+                  Máximo pendiente: {formatCOP(selectedInvoice?.amount_residual)}
                 </span>
               </div>
 
