@@ -50,31 +50,43 @@ export default function Navbar({
 
   return (
     <header className="bg-[#714B67] text-white flex items-center justify-between px-3 h-12 shadow select-none">
-      {/* Left: App Switcher, App Title & Back to Home */}
-      <div className="flex items-center space-x-3">
+      {/* Left: App Switcher, Back to Home & App Title */}
+      <div className="flex items-center space-x-2 sm:space-x-3">
         <button
           onClick={onOpenLauncher}
-          title="Menú de Aplicaciones"
+          title="Menú de Aplicaciones (Waffle)"
           className="p-1.5 rounded hover:bg-white/15 transition-colors flex items-center justify-center text-white cursor-pointer"
         >
           <LayoutGrid className="w-5 h-5" />
         </button>
 
-        {/* Botón para regresar al Tablero Principal desde cualquier módulo */}
-        {activeApp !== 'dashboard' && (
+        {/* Botón Destacado para Regresar a la Pantalla Principal */}
+        {activeApp !== 'dashboard' ? (
           <button
             onClick={() => setActiveApp('dashboard')}
             title="Volver a la pantalla principal"
-            className="flex items-center space-x-1.5 px-2.5 py-1 bg-white/20 hover:bg-white/30 rounded-lg text-xs font-bold transition-all text-white cursor-pointer active:scale-95 shadow-2xs border border-white/25"
+            className="flex items-center space-x-1.5 px-3 py-1 bg-amber-400 hover:bg-amber-300 text-slate-900 rounded-lg text-xs font-black transition-all cursor-pointer active:scale-95 shadow-md border border-amber-300"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Inicio</span>
+            <ArrowLeft className="w-4 h-4 stroke-[3]" />
+            <span>← INICIO</span>
+          </button>
+        ) : (
+          <button
+            onClick={onOpenLauncher}
+            className="flex items-center space-x-1 text-xs text-white/80 hover:text-white px-2 py-1 rounded hover:bg-white/10"
+          >
+            <Home className="w-4 h-4 text-amber-300" />
+            <span className="font-semibold hidden sm:inline">Inicio</span>
           </button>
         )}
 
-        <span className="font-semibold text-lg tracking-tight pr-3 border-r border-white/20">
+        <button
+          onClick={() => setActiveApp('dashboard')}
+          title="Ir al inicio"
+          className="font-semibold text-base sm:text-lg tracking-tight pr-3 border-r border-white/20 hover:text-amber-200 cursor-pointer transition text-left"
+        >
           {appNames[activeApp] || 'ERP'}
-        </span>
+        </button>
 
         {/* Submenu links */}
         <nav className="hidden md:flex items-center space-x-1">
