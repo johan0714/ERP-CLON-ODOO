@@ -48,7 +48,7 @@ export default function LoginView({ onLoginSuccess }) {
       <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute bottom-1/4 right-1/3 w-96 h-96 bg-indigo-600/15 rounded-full blur-3xl pointer-events-none"></div>
 
-      <div className="relative z-10 max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 border border-slate-100">
+      <div className="relative z-10 max-w-md w-full bg-white rounded-3xl shadow-2xl p-5 sm:p-8 border border-slate-100">
         {/* Brand Header */}
         <div className="text-center mb-6">
           <div className="w-16 h-16 bg-gradient-to-br from-blue-700 to-indigo-800 text-white rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-blue-700/25 mb-3.5">
@@ -141,7 +141,7 @@ export default function LoginView({ onLoginSuccess }) {
             Perfiles Rápidos de Acceso
           </span>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {/* Admin Profile */}
             <button
               type="button"

@@ -183,7 +183,7 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
               </div>
 
               {/* Cabecera */}
-              <div className="grid grid-cols-2 gap-6 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
                 <div>
                   <span className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Cliente</span>
                   <div className="font-bold text-slate-900 text-base">{selectedInvoice.partner?.name}</div>
@@ -223,8 +223,8 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
               {/* Líneas de Factura */}
               <div>
                 <h4 className="text-xs font-bold uppercase text-slate-500 mb-2">Líneas de Factura</h4>
-                <div className="border border-slate-200 rounded-xl overflow-hidden">
-                  <table className="w-full text-left text-xs">
+                <div className="border border-slate-200 rounded-xl overflow-x-auto">
+                  <table className="w-full min-w-[500px] text-left text-xs">
                     <thead className="bg-slate-100 text-slate-600 uppercase font-semibold">
                       <tr>
                         <th className="py-2.5 px-3">Concepto / Producto</th>
@@ -277,8 +277,8 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
               {selectedInvoice.payments?.length > 0 && (
                 <div className="pt-4 border-t border-slate-200">
                   <h4 className="text-xs font-bold uppercase text-slate-500 mb-2">Historial de Pagos y Cobros</h4>
-                  <div className="bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
-                    <table className="w-full text-left text-xs">
+                  <div className="bg-slate-50 rounded-xl border border-slate-200 overflow-x-auto">
+                    <table className="w-full min-w-[500px] text-left text-xs">
                       <thead className="bg-slate-100 text-slate-600 uppercase font-semibold">
                         <tr>
                           <th className="py-2 px-3">Recibo</th>
@@ -309,8 +309,8 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
           </div>
         ) : (
           /* VISTA LISTA FACTURAS */
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-2xs">
-            <table className="w-full text-left text-sm">
+          <div className="bg-white rounded-xl border border-slate-200 overflow-x-auto shadow-2xs">
+            <table className="w-full min-w-[700px] text-left text-sm">
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase font-semibold">
                 <tr>
                   <th className="py-3 px-4">Número</th>
@@ -384,8 +384,8 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
 
       {/* Modal Registrar Pago */}
       {paymentModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-sm w-full p-6">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white rounded-3xl shadow-xl max-w-sm w-full max-h-[92vh] overflow-y-auto p-5 sm:p-6 border border-slate-100">
             <div className="flex items-center justify-between pb-3 border-b mb-4">
               <h3 className="text-lg font-bold text-slate-800">Registrar Pago</h3>
               <button

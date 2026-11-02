@@ -272,8 +272,8 @@ export default function InventoryView({ subView = 'products', onHome }) {
               })}
             </div>
           ) : (
-            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
-              <table className="w-full text-left text-sm">
+            <div className="bg-white rounded-2xl border border-slate-200 overflow-x-auto shadow-2xs">
+              <table className="w-full min-w-[720px] text-left text-sm">
                 <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase font-semibold">
                   <tr>
                     <th className="py-3 px-4">Referencia</th>
@@ -334,8 +334,8 @@ export default function InventoryView({ subView = 'products', onHome }) {
           )
         ) : (
           /* VISTA ALBARANES / PICKINGS */
-          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
-            <table className="w-full text-left text-sm">
+          <div className="bg-white rounded-2xl border border-slate-200 overflow-x-auto shadow-2xs">
+            <table className="w-full min-w-[650px] text-left text-sm">
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase font-semibold">
                 <tr>
                   <th className="py-3 px-4">Albarán</th>
@@ -403,8 +403,8 @@ export default function InventoryView({ subView = 'products', onHome }) {
 
       {/* Modal Crear / Modificar Producto */}
       {productModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 border border-slate-100">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full max-h-[92vh] overflow-y-auto p-5 sm:p-6 border border-slate-100">
             <div className="flex items-center justify-between pb-3 border-b mb-4">
               <div>
                 <h3 className="text-lg font-bold text-slate-900">
@@ -566,8 +566,8 @@ export default function InventoryView({ subView = 'products', onHome }) {
 
       {/* Modal Detalle Albarán */}
       {selectedPicking && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-6 border border-slate-100">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[92vh] overflow-y-auto p-5 sm:p-6 border border-slate-100">
             <div className="flex items-center justify-between pb-3 border-b mb-4">
               <div>
                 <span className="text-xs uppercase font-bold text-slate-400">Albarán de Salida / Despacho</span>
@@ -582,7 +582,7 @@ export default function InventoryView({ subView = 'products', onHome }) {
             </div>
 
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
                 <div>
                   <span className="text-xs text-slate-400 block font-semibold">Cliente Destinatario</span>
                   <span className="font-bold text-slate-800 text-sm">{selectedPicking.partner?.name || 'Cliente sin nombre'}</span>
@@ -599,8 +599,8 @@ export default function InventoryView({ subView = 'products', onHome }) {
 
               <div>
                 <h4 className="text-xs font-bold uppercase text-slate-500 mb-2">Líneas de Movimiento de Almacén</h4>
-                <div className="border border-slate-200 rounded-2xl overflow-hidden">
-                  <table className="w-full text-left text-xs">
+                <div className="border border-slate-200 rounded-2xl overflow-x-auto">
+                  <table className="w-full min-w-[500px] text-left text-xs">
                     <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase">
                       <tr>
                         <th className="py-2.5 px-3">Lubricante / Filtro</th>

@@ -300,8 +300,8 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                   </button>
                 </div>
 
-                <div className="border border-slate-200 rounded-xl overflow-hidden shadow-2xs">
-                  <table className="w-full text-left text-xs">
+                <div className="border border-slate-200 rounded-xl overflow-x-auto shadow-2xs">
+                  <table className="w-full min-w-[580px] text-left text-xs">
                     <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase">
                       <tr>
                         <th className="py-2.5 px-3">Producto</th>
@@ -497,7 +497,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
               </div>
 
               {/* Datos Cliente y Fecha */}
-              <div className="grid grid-cols-2 gap-6 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
                 <div>
                   <span className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Cliente</span>
                   <div className="font-bold text-slate-900 text-base">{selectedOrder.partner?.name}</div>
@@ -530,8 +530,8 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
               {/* Tabla de Líneas */}
               <div>
                 <h4 className="text-xs font-bold uppercase text-slate-500 mb-2">Líneas de Pedido</h4>
-                <div className="border border-slate-200 rounded-xl overflow-hidden">
-                  <table className="w-full text-left text-xs">
+                <div className="border border-slate-200 rounded-xl overflow-x-auto">
+                  <table className="w-full min-w-[580px] text-left text-xs">
                     <thead className="bg-slate-100 text-slate-600 uppercase font-semibold">
                       <tr>
                         <th className="py-2.5 px-3">Producto / Concepto</th>
@@ -581,8 +581,8 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
           </div>
         ) : (
           /* VISTA LISTA DE PEDIDOS */
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-2xs">
-            <table className="w-full text-left text-sm">
+          <div className="bg-white rounded-xl border border-slate-200 overflow-x-auto shadow-2xs">
+            <table className="w-full min-w-[700px] text-left text-sm">
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase font-semibold">
                 <tr>
                   <th className="py-3 px-4">Número</th>

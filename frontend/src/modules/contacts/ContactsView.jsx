@@ -188,8 +188,8 @@ export default function ContactsView({ subView = 'all', onHome }) {
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-2xs">
-            <table className="w-full text-left text-sm">
+          <div className="bg-white rounded-2xl border border-slate-200 overflow-x-auto shadow-2xs">
+            <table className="w-full min-w-[650px] text-left text-sm">
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase font-semibold">
                 <tr>
                   <th className="py-3 px-4">Nombre</th>
@@ -236,8 +236,8 @@ export default function ContactsView({ subView = 'all', onHome }) {
 
       {/* Modal Contacto */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 relative">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[92vh] overflow-y-auto p-5 sm:p-6 border border-slate-100 relative">
             <div className="flex items-center justify-between pb-3 border-b mb-4">
               <h3 className="text-lg font-bold text-slate-800">
                 {editingContact ? 'Editar Contacto' : 'Nuevo Contacto'}

@@ -14,9 +14,9 @@ export default function ControlPanel({
   onHome = null,
 }) {
   return (
-    <div className="bg-white border-b border-slate-200 px-5 py-3 flex flex-wrap items-center justify-between gap-3 shadow-xs select-none">
+    <div className="bg-white border-b border-slate-200 px-3 sm:px-5 py-2.5 sm:py-3 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 shadow-xs select-none">
       {/* Left: Home Return, Breadcrumbs & Primary Actions */}
-      <div className="flex items-center space-x-3">
+      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
         {onHome && (
           <button
             onClick={onHome}
@@ -75,7 +75,7 @@ export default function ControlPanel({
               placeholder="Buscar en este módulo..."
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 w-44 sm:w-60 transition"
+              className="pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 w-36 sm:w-60 transition"
             />
           </div>
         )}

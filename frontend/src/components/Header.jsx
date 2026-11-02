@@ -136,7 +136,7 @@ export default function Header({
           >
             <MapPin className="w-3.5 h-3.5 text-blue-600 shrink-0" />
             <div className="text-[11px] leading-tight">
-              <span className="font-bold text-slate-700 block truncate max-w-[120px] sm:max-w-[160px]">
+              <span className="font-bold text-slate-700 block truncate max-w-[70px] xs:max-w-[110px] sm:max-w-[160px]">
                 {currentUser?.city || 'Bucaramanga'}
               </span>
             </div>

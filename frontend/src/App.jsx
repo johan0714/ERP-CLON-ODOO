@@ -17,6 +17,7 @@ export default function App() {
   const [activeApp, setActiveApp] = useState('dashboard');
   const [activeSubView, setActiveSubView] = useState('main');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedInvoiceId, setSelectedInvoiceId] = useState(null);
 
   const handleLoginSuccess = (user) => {
@@ -38,6 +39,7 @@ export default function App() {
 
   const handleSelectApp = (appId, subView = null) => {
     setActiveApp(appId);
+    setMobileMenuOpen(false); // Auto close mobile drawer on navigation
     if (subView) {
       setActiveSubView(subView);
     } else {
@@ -55,12 +57,14 @@ export default function App() {
   const handleOpenDelivery = () => {
     setActiveApp('inventory');
     setActiveSubView('pickings');
+    setMobileMenuOpen(false);
   };
 
   const handleOpenInvoice = () => {
     setActiveApp('invoicing');
     setActiveSubView('invoices');
     setSelectedInvoiceId(null);
+    setMobileMenuOpen(false);
   };
 
   // Login view if unauthenticated
@@ -69,14 +73,16 @@ export default function App() {
   }
 
   return (
-    <div className="h-screen w-screen bg-slate-50 flex overflow-hidden font-sans antialiased text-slate-800">
-      {/* Professional Collapsible Sidebar */}
+    <div className="h-screen w-screen bg-slate-50 flex overflow-hidden font-sans antialiased text-slate-800 relative">
+      {/* Professional Responsive Collapsible Sidebar & Mobile Drawer */}
       <Sidebar
         activeApp={activeApp}
         activeSubView={activeSubView}
         onSelectApp={handleSelectApp}
         collapsed={sidebarCollapsed}
         setCollapsed={setSidebarCollapsed}
+        mobileOpen={mobileMenuOpen}
+        onCloseMobile={() => setMobileMenuOpen(false)}
         currentUser={currentUser}
       />
 
@@ -87,7 +93,7 @@ export default function App() {
           activeApp={activeApp}
           activeSubView={activeSubView}
           onNavigateHome={() => handleSelectApp('dashboard', 'main')}
-          onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+          onToggleSidebar={() => setMobileMenuOpen(!mobileMenuOpen)}
           currentUser={currentUser}
           onUpdateUser={handleUpdateUser}
           onLogout={handleLogout}
