@@ -102,28 +102,29 @@ export default function App() {
 
         {activeApp === 'sales' && (
           activeSubView === 'customers' ? (
-            <ContactsView subView="customers" currentUser={currentUser} />
+            <ContactsView subView="customers" currentUser={currentUser} onHome={() => setActiveApp('dashboard')} />
           ) : activeSubView === 'products' ? (
-            <InventoryView subView="products" currentUser={currentUser} />
+            <InventoryView subView="products" currentUser={currentUser} onHome={() => setActiveApp('dashboard')} />
           ) : (
             <SalesView
               currentUser={currentUser}
               onOpenDelivery={handleOpenDelivery}
               onOpenInvoice={handleOpenInvoice}
+              onHome={() => setActiveApp('dashboard')}
             />
           )
         )}
 
         {activeApp === 'inventory' && (
-          <InventoryView subView={activeSubView} currentUser={currentUser} />
+          <InventoryView subView={activeSubView} currentUser={currentUser} onHome={() => setActiveApp('dashboard')} />
         )}
 
         {activeApp === 'invoicing' && (
-          <InvoicingView defaultInvoiceId={selectedInvoiceId} currentUser={currentUser} />
+          <InvoicingView defaultInvoiceId={selectedInvoiceId} currentUser={currentUser} onHome={() => setActiveApp('dashboard')} />
         )}
 
         {activeApp === 'contacts' && (
-          <ContactsView subView={activeSubView} currentUser={currentUser} />
+          <ContactsView subView={activeSubView} currentUser={currentUser} onHome={() => setActiveApp('dashboard')} />
         )}
       </main>
     </div>

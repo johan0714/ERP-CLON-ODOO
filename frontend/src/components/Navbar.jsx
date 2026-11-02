@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutGrid, Bell, Building2, MapPin, LogOut, ShieldCheck, User } from 'lucide-react';
+import { LayoutGrid, Bell, Building2, MapPin, LogOut, ArrowLeft, Home } from 'lucide-react';
 
 export default function Navbar({
   activeApp,
@@ -50,7 +50,7 @@ export default function Navbar({
 
   return (
     <header className="bg-[#714B67] text-white flex items-center justify-between px-3 h-12 shadow select-none">
-      {/* Left: App Switcher & App Title */}
+      {/* Left: App Switcher, App Title & Back to Home */}
       <div className="flex items-center space-x-3">
         <button
           onClick={onOpenLauncher}
@@ -59,6 +59,18 @@ export default function Navbar({
         >
           <LayoutGrid className="w-5 h-5" />
         </button>
+
+        {/* Botón para regresar al Tablero Principal desde cualquier módulo */}
+        {activeApp !== 'dashboard' && (
+          <button
+            onClick={() => setActiveApp('dashboard')}
+            title="Volver a la pantalla principal"
+            className="flex items-center space-x-1.5 px-2.5 py-1 bg-white/20 hover:bg-white/30 rounded-lg text-xs font-bold transition-all text-white cursor-pointer active:scale-95 shadow-2xs border border-white/25"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Inicio</span>
+          </button>
+        )}
 
         <span className="font-semibold text-lg tracking-tight pr-3 border-r border-white/20">
           {appNames[activeApp] || 'ERP'}

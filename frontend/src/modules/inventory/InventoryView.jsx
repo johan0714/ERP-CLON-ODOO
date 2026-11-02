@@ -4,7 +4,7 @@ import ControlPanel from '../../components/ControlPanel';
 import { formatCOP } from '../../utils/format';
 import { Package, Truck, CheckCircle2, Clock, Plus, X, AlertTriangle } from 'lucide-react';
 
-export default function InventoryView({ subView = 'products' }) {
+export default function InventoryView({ subView = 'products', onHome }) {
   const [currentTab, setCurrentTab] = useState(subView === 'pickings' ? 'pickings' : 'products');
   const [products, setProducts] = useState([]);
   const [pickings, setPickings] = useState([]);
@@ -103,6 +103,7 @@ export default function InventoryView({ subView = 'products' }) {
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       <ControlPanel
+        onHome={onHome}
         breadcrumbs={[
           { label: 'Inventario' },
           { label: currentTab === 'products' ? 'Productos y Stock' : 'Albaranes de Entrega' }

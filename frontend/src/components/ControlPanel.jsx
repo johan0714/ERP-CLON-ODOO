@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Plus, List, LayoutGrid, ChevronRight } from 'lucide-react';
+import { Search, Plus, List, LayoutGrid, ChevronRight, Home } from 'lucide-react';
 
 export default function ControlPanel({
   breadcrumbs = [],
@@ -11,6 +11,7 @@ export default function ControlPanel({
   onViewModeChange,
   showViewSwitcher = true,
   extraButtons = null,
+  onHome = null,
 }) {
   return (
     <div className="bg-white border-b border-slate-200 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 shadow-2xs">
@@ -29,12 +30,25 @@ export default function ControlPanel({
         {extraButtons}
 
         {/* Breadcrumbs */}
-        <nav className="flex items-center space-x-1 text-sm text-slate-600">
+        <nav className="flex items-center space-x-1.5 text-sm text-slate-600">
+          {onHome && (
+            <>
+              <button
+                onClick={onHome}
+                title="Volver al Inicio"
+                className="hover:text-[#714B67] text-slate-400 hover:bg-slate-100 p-1 rounded transition-colors cursor-pointer flex items-center"
+              >
+                <Home className="w-4 h-4" />
+              </button>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
+            </>
+          )}
+
           {breadcrumbs.map((crumb, idx) => {
             const isLast = idx === breadcrumbs.length - 1;
             return (
               <React.Fragment key={idx}>
-                {idx > 0 && <ChevronRight className="w-4 h-4 text-slate-400" />}
+                {idx > 0 && <ChevronRight className="w-3.5 h-3.5 text-slate-400" />}
                 {crumb.onClick && !isLast ? (
                   <button
                     onClick={crumb.onClick}

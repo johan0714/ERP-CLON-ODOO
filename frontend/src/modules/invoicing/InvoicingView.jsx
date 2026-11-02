@@ -4,7 +4,7 @@ import ControlPanel from '../../components/ControlPanel';
 import { formatCOP } from '../../utils/format';
 import { Receipt, CheckCircle, CreditCard, ArrowLeft, X, DollarSign, Calendar } from 'lucide-react';
 
-export default function InvoicingView({ defaultInvoiceId = null }) {
+export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -87,6 +87,7 @@ export default function InvoicingView({ defaultInvoiceId = null }) {
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       <ControlPanel
+        onHome={onHome}
         breadcrumbs={
           selectedInvoice
             ? [{ label: 'Facturación', onClick: () => setSelectedInvoice(null) }, { label: selectedInvoice.name }]

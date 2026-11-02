@@ -3,7 +3,7 @@ import api from '../../api/client';
 import ControlPanel from '../../components/ControlPanel';
 import { Mail, Phone, MapPin, Building, User, Check, X } from 'lucide-react';
 
-export default function ContactsView({ subView = 'all' }) {
+export default function ContactsView({ subView = 'all', onHome }) {
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -100,6 +100,7 @@ export default function ContactsView({ subView = 'all' }) {
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       <ControlPanel
+        onHome={onHome}
         breadcrumbs={[
           { label: 'Contactos' },
           { label: subView === 'customers' ? 'Clientes' : subView === 'suppliers' ? 'Proveedores' : 'Todos' }

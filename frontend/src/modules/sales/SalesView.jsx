@@ -14,7 +14,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 
-export default function SalesView({ onOpenDelivery, onOpenInvoice }) {
+export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -214,6 +214,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice }) {
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* Control Panel */}
       <ControlPanel
+        onHome={onHome}
         breadcrumbs={
           selectedOrder
             ? [{ label: 'Ventas', onClick: () => setSelectedOrder(null) }, { label: selectedOrder.name }]
