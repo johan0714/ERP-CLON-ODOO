@@ -8,22 +8,22 @@ def run_seed():
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
 
-    # 0. Usuarios para acceso remoto inter-ciudades (Colombia)
+    # 0. Usuarios Santander (Bucaramanga y El Centro, Barrancabermeja)
     if db.query(ResUser).count() == 0:
         admin_user = ResUser(
             name="Pedro Albarracín (Admin)",
             email="admin@empresa.com",
             hashed_password=hash_password("admin123"),
             role="admin",
-            city="Bogotá D.C. (Sede Central)",
+            city="Bucaramanga (Sede Principal)",
             avatar_color="bg-[#714B67]"
         )
         emp_user = ResUser(
-            name="Laura Gómez (Ventas & Almacén)",
+            name="Operaciones & Logística",
             email="empleado@empresa.com",
             hashed_password=hash_password("empleado123"),
             role="employee",
-            city="Medellín (Sucursal)",
+            city="El Centro, Barrancabermeja",
             avatar_color="bg-emerald-600"
         )
         db.add_all([admin_user, emp_user])
@@ -43,47 +43,47 @@ def run_seed():
         if not existing:
             db.add(IrSequence(**s_data))
 
-    # 2. Contactos / Clientes / Proveedores (Colombia)
+    # 2. Contactos / Clientes / Proveedores (Santander: Bucaramanga y Barrancabermeja)
     if db.query(ResPartner).count() == 0:
         partners = [
             ResPartner(
-                name="Grupo Colombia Soluciones S.A.S.",
+                name="Servicios Industriales & Logísticos del Magdalena Medio S.A.S.",
                 is_company=True,
-                email="contacto@colombiasoluciones.com",
-                phone="+57 601 745 8900",
+                email="gerencia@servicioselcentro.com",
+                phone="+57 607 622 8900",
                 vat="901.458.789-2",
-                street="Carrera 7 # 72-13, Torre Empresarial",
-                city="Bogotá D.C.",
+                street="Vía Principal Km 8, Sector Campo 22",
+                city="El Centro, Barrancabermeja",
                 country="Colombia",
                 is_customer=True,
                 is_supplier=False,
-                comment="Cliente corporativo principal"
+                comment="Cliente industrial en El Centro, Barrancabermeja"
             ),
             ResPartner(
-                name="Distribuidora Tecnológica de Antioquia S.A.S.",
+                name="Distribuidora Comercial del Oriente S.A.S.",
                 is_company=True,
-                email="ventas@distriantioquia.com.co",
-                phone="+57 604 444 1234",
+                email="ventas@distrioriente.com.co",
+                phone="+57 607 645 1234",
                 vat="890.123.456-7",
-                street="Calle 10 # 43E-20, El Poblado",
-                city="Medellín",
+                street="Carrera 27 # 36-14, Cabecera",
+                city="Bucaramanga",
                 country="Colombia",
                 is_customer=False,
                 is_supplier=True,
-                comment="Proveedor mayorista de hardware"
+                comment="Proveedor mayorista en Bucaramanga"
             ),
             ResPartner(
-                name="Carlos Morales (Consultor Freelance)",
+                name="Contratista & Consultor Técnico",
                 is_company=False,
-                email="carlos.morales@techcolombia.co",
-                phone="+57 310 987 6543",
-                vat="1.020.345.678",
-                street="Avenida San Martín # 5-40",
-                city="Cali",
+                email="contratista@santander.co",
+                phone="+57 315 987 6543",
+                vat="1.098.345.678",
+                street="Calle 50 # 18-25",
+                city="Barrancabermeja",
                 country="Colombia",
                 is_customer=True,
                 is_supplier=False,
-                comment="Desarrollador y consultor independiente"
+                comment="Operaciones de campo"
             ),
         ]
         db.add_all(partners)
