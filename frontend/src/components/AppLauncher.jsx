@@ -61,7 +61,7 @@ export default function AppLauncher({ isOpen, onClose, onSelectApp }) {
       >
         <div className="flex items-center justify-between border-b pb-4 mb-6">
           <div className="flex items-center space-x-2">
-            <Layers className="w-6 h-6 text-[#714B67]" />
+            <Layers className="w-6 h-6 text-blue-700" />
             <h2 className="text-xl font-bold text-slate-800 tracking-tight">Aplicaciones ERP</h2>
           </div>
           <button

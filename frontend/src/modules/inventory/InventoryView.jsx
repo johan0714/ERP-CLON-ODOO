@@ -254,7 +254,7 @@ export default function InventoryView({ subView = 'products', onHome }) {
                       onClick={() => setSelectedPicking(pk)}
                       className="hover:bg-slate-50 cursor-pointer transition-colors"
                     >
-                      <td className="py-3 px-4 font-mono font-bold text-[#714B67]">{pk.name}</td>
+                      <td className="py-3 px-4 font-mono font-bold text-blue-700">{pk.name}</td>
                       <td className="py-3 px-4 text-slate-800 font-medium">{pk.partner?.name || 'Cliente sin nombre'}</td>
                       <td className="py-3 px-4 font-mono text-xs text-indigo-700">{pk.origin || '-'}</td>
                       <td className="py-3 px-4 text-xs text-slate-500">
@@ -318,7 +318,7 @@ export default function InventoryView({ subView = 'products', onHome }) {
                   placeholder="Ej. Servidor Blade 2U"
                   value={productForm.name}
                   onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
-                  className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-[#714B67]"
+                  className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-blue-600"
                 />
               </div>
 
@@ -330,7 +330,7 @@ export default function InventoryView({ subView = 'products', onHome }) {
                     placeholder="SRV-2U"
                     value={productForm.default_code}
                     onChange={(e) => setProductForm({ ...productForm, default_code: e.target.value })}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-[#714B67]"
+                    className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-blue-600"
                   />
                 </div>
                 <div>
@@ -338,7 +338,7 @@ export default function InventoryView({ subView = 'products', onHome }) {
                   <select
                     value={productForm.type}
                     onChange={(e) => setProductForm({ ...productForm, type: e.target.value })}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-[#714B67] bg-white"
+                    className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-blue-600 bg-white"
                   >
                     <option value="product">Almacenable</option>
                     <option value="service">Servicio</option>
@@ -355,7 +355,7 @@ export default function InventoryView({ subView = 'products', onHome }) {
                     required
                     value={productForm.list_price}
                     onChange={(e) => setProductForm({ ...productForm, list_price: parseFloat(e.target.value) || 0 })}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-[#714B67]"
+                    className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-blue-600"
                   />
                 </div>
                 <div>
@@ -365,7 +365,7 @@ export default function InventoryView({ subView = 'products', onHome }) {
                     step="1"
                     value={productForm.standard_price}
                     onChange={(e) => setProductForm({ ...productForm, standard_price: parseFloat(e.target.value) || 0 })}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-[#714B67]"
+                    className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-blue-600"
                   />
                 </div>
               </div>
@@ -378,7 +378,7 @@ export default function InventoryView({ subView = 'products', onHome }) {
                       type="number"
                       value={productForm.initial_qty}
                       onChange={(e) => setProductForm({ ...productForm, initial_qty: parseFloat(e.target.value) || 0 })}
-                      className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-[#714B67]"
+                      className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-blue-600"
                     />
                   </div>
                   <div>
@@ -387,7 +387,7 @@ export default function InventoryView({ subView = 'products', onHome }) {
                       type="text"
                       value={productForm.uom_name}
                       onChange={(e) => setProductForm({ ...productForm, uom_name: e.target.value })}
-                      className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-[#714B67]"
+                      className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-blue-600"
                     />
                   </div>
                 </div>
@@ -403,7 +403,7 @@ export default function InventoryView({ subView = 'products', onHome }) {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded bg-[#714B67] hover:bg-[#5b3c53] text-white font-medium cursor-pointer shadow-xs"
+                  className="px-4 py-1.5 rounded bg-blue-700 hover:bg-blue-800 text-white font-medium cursor-pointer shadow-xs"
                 >
                   Crear Producto
                 </button>

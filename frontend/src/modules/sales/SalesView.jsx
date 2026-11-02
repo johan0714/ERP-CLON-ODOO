@@ -265,7 +265,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                     required
                     value={newOrderData.partner_id}
                     onChange={(e) => setNewOrderData({ ...newOrderData, partner_id: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white font-medium focus:ring-2 focus:ring-[#714B67]"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white font-medium focus:ring-2 focus:ring-blue-600"
                   >
                     <option value="">-- Seleccionar Cliente --</option>
                     {partners.map((p) => (
@@ -281,7 +281,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                     type="text"
                     value={newOrderData.note}
                     onChange={(e) => setNewOrderData({ ...newOrderData, note: e.target.value })}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-[#714B67]"
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-600"
                   />
                 </div>
               </div>
@@ -293,7 +293,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                   <button
                     type="button"
                     onClick={handleAddLine}
-                    className="flex items-center space-x-1 text-xs font-bold text-[#714B67] hover:text-[#53344b] cursor-pointer"
+                    className="flex items-center space-x-1 text-xs font-bold text-blue-700 hover:text-blue-800 cursor-pointer"
                   >
                     <Plus className="w-4 h-4" />
                     <span>Agregar Producto</span>
@@ -321,7 +321,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                               <select
                                 value={line.product_id}
                                 onChange={(e) => handleLineProductChange(idx, e.target.value)}
-                                className="w-full py-1 px-2 border border-slate-300 rounded text-xs bg-white focus:ring-1 focus:ring-[#714B67]"
+                                className="w-full py-1 px-2 border border-slate-300 rounded text-xs bg-white focus:ring-1 focus:ring-blue-600"
                               >
                                 {products.map((p) => (
                                   <option key={p.id} value={p.id}>
@@ -386,7 +386,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                     </div>
                     <div className="flex justify-between text-sm font-black text-slate-900 pt-2 border-t border-slate-200">
                       <span>Total:</span>
-                      <span className="text-[#714B67]">{formatCOP(calculateNewOrderTotals().total)}</span>
+                      <span className="text-blue-700">{formatCOP(calculateNewOrderTotals().total)}</span>
                     </div>
                   </div>
                 </div>
@@ -402,7 +402,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-[#714B67] hover:bg-[#593950] text-white rounded-lg text-sm font-bold shadow-md cursor-pointer transition active:scale-95"
+                  className="px-6 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded-lg text-sm font-bold shadow-md cursor-pointer transition active:scale-95"
                 >
                   Guardar Presupuesto
                 </button>
@@ -419,7 +419,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                 {selectedOrder.state === 'draft' && (
                   <button
                     onClick={handleConfirmOrder}
-                    className="bg-[#714B67] hover:bg-[#5b3c53] text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-sm transition active:scale-95 cursor-pointer uppercase tracking-wider"
+                    className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-sm transition active:scale-95 cursor-pointer uppercase tracking-wider"
                   >
                     Confirmar Pedido
                   </button>
@@ -440,7 +440,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                 <div
                   className={`px-3 py-1.5 ${
                     selectedOrder.state === 'draft'
-                      ? 'bg-[#714B67] text-white'
+                      ? 'bg-blue-700 text-white'
                       : 'text-slate-400 bg-slate-50'
                   }`}
                 >
@@ -449,7 +449,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                 <div
                   className={`px-3 py-1.5 border-l border-slate-200 ${
                     selectedOrder.state === 'sale'
-                      ? 'bg-[#714B67] text-white'
+                      ? 'bg-blue-700 text-white'
                       : 'text-slate-400 bg-slate-50'
                   }`}
                 >
@@ -572,7 +572,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                     </div>
                     <div className="flex justify-between text-base font-black text-slate-900 pt-2 border-t border-slate-200">
                       <span>Total:</span>
-                      <span className="text-[#714B67]">{formatCOP(selectedOrder.amount_total)}</span>
+                      <span className="text-blue-700">{formatCOP(selectedOrder.amount_total)}</span>
                     </div>
                   </div>
                 </div>
@@ -608,7 +608,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                       onClick={() => handleSelectOrder(o.id)}
                       className="hover:bg-slate-50 cursor-pointer transition-colors"
                     >
-                      <td className="py-3 px-4 font-mono font-bold text-[#714B67]">{o.name}</td>
+                      <td className="py-3 px-4 font-mono font-bold text-blue-700">{o.name}</td>
                       <td className="py-3 px-4 font-medium text-slate-900">{o.partner?.name || 'Cliente'}</td>
                       <td className="py-3 px-4 text-xs text-slate-500">
                         {new Date(o.date_order).toLocaleDateString()}

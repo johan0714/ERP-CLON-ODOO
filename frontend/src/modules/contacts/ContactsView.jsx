@@ -135,7 +135,7 @@ export default function ContactsView({ subView = 'all', onHome }) {
                         {c.is_company ? <Building className="w-5 h-5" /> : <User className="w-5 h-5" />}
                       </div>
                       <div>
-                        <h4 className="font-bold text-slate-900 group-hover:text-[#714B67] transition-colors line-clamp-1">
+                        <h4 className="font-bold text-slate-900 group-hover:text-blue-700 transition-colors line-clamp-1">
                           {c.name}
                         </h4>
                         <span className="text-[11px] text-slate-400">
@@ -257,7 +257,7 @@ export default function ContactsView({ subView = 'all', onHome }) {
                     type="checkbox"
                     checked={formData.is_company}
                     onChange={(e) => setFormData({ ...formData, is_company: e.target.checked })}
-                    className="rounded text-[#714B67] focus:ring-[#714B67]"
+                    className="rounded text-blue-700 focus:ring-blue-600"
                   />
                   <span className="text-xs font-semibold text-slate-700">Es Empresa</span>
                 </label>
@@ -266,7 +266,7 @@ export default function ContactsView({ subView = 'all', onHome }) {
                     type="checkbox"
                     checked={formData.is_customer}
                     onChange={(e) => setFormData({ ...formData, is_customer: e.target.checked })}
-                    className="rounded text-[#714B67] focus:ring-[#714B67]"
+                    className="rounded text-blue-700 focus:ring-blue-600"
                   />
                   <span className="text-xs font-semibold text-slate-700">Cliente</span>
                 </label>
@@ -275,7 +275,7 @@ export default function ContactsView({ subView = 'all', onHome }) {
                     type="checkbox"
                     checked={formData.is_supplier}
                     onChange={(e) => setFormData({ ...formData, is_supplier: e.target.checked })}
-                    className="rounded text-[#714B67] focus:ring-[#714B67]"
+                    className="rounded text-blue-700 focus:ring-blue-600"
                   />
                   <span className="text-xs font-semibold text-slate-700">Proveedor</span>
                 </label>
@@ -286,10 +286,10 @@ export default function ContactsView({ subView = 'all', onHome }) {
                 <input
                   type="text"
                   required
-                  placeholder="Ej. Distribuciones del Norte S.A."
+                  placeholder="Ej. Distribuciones del Oriente S.A.S."
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-[#714B67] focus:border-[#714B67]"
+                  className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
                 />
               </div>
 
@@ -301,52 +301,52 @@ export default function ContactsView({ subView = 'all', onHome }) {
                     placeholder="contacto@empresa.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-[#714B67] focus:border-[#714B67]"
+                    className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">Teléfono</label>
                   <input
                     type="text"
-                    placeholder="+34 600..."
+                    placeholder="+57 310..."
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-[#714B67] focus:border-[#714B67]"
+                    className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">NIF / CIF / Tax ID</label>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">NIT / Cédula / RUT</label>
                   <input
                     type="text"
-                    placeholder="B12345678"
+                    placeholder="900.123.456-7"
                     value={formData.vat}
                     onChange={(e) => setFormData({ ...formData, vat: e.target.value })}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-[#714B67] focus:border-[#714B67]"
+                    className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1">Ciudad</label>
                   <input
                     type="text"
-                    placeholder="Madrid"
+                    placeholder="Bucaramanga / Barrancabermeja"
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-[#714B67] focus:border-[#714B67]"
+                    className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Dirección (Calle, Número)</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">Dirección (Calle, Carrera, Número)</label>
                 <input
                   type="text"
-                  placeholder="Calle Principal 123"
+                  placeholder="Carrera 27 # 36-14"
                   value={formData.street}
                   onChange={(e) => setFormData({ ...formData, street: e.target.value })}
-                  className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-[#714B67] focus:border-[#714B67]"
+                  className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
                 />
               </div>
 
@@ -360,7 +360,7 @@ export default function ContactsView({ subView = 'all', onHome }) {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 rounded bg-[#714B67] hover:bg-[#5b3c53] text-white font-medium cursor-pointer shadow-xs"
+                  className="px-4 py-1.5 rounded bg-blue-700 hover:bg-blue-800 text-white font-medium cursor-pointer shadow-xs"
                 >
                   Guardar
                 </button>

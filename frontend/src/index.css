@@ -1,15 +1,36 @@
 @import "tailwindcss";
 
 @layer base {
+  :root {
+    --erp-primary: #1e40af;       /* Blue 800 - Corporate Primary */
+    --erp-primary-light: #3b82f6; /* Blue 500 */
+    --erp-primary-dark: #172554;  /* Blue 950 */
+    --erp-surface: #ffffff;
+    --erp-bg: #f8fafc;           /* Slate 50 */
+    --erp-border: #e2e8f0;       /* Slate 200 */
+  }
+
   body {
-    @apply bg-slate-100 text-slate-800 antialiased font-sans;
+    background-color: var(--erp-bg);
+    color: #0f172a;              /* Slate 900 */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-/* Odoo styling variables & utilities */
-:root {
-  --odoo-primary: #714B67;
-  --odoo-secondary: #00A09D;
-  --odoo-dark: #2C3E50;
-  --odoo-bg: #F9FAFB;
+/* Custom crisp scrollbar for enterprise tables */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }

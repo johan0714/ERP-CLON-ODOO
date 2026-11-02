@@ -119,7 +119,7 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                 {selectedInvoice.state === 'draft' && (
                   <button
                     onClick={handlePostInvoice}
-                    className="bg-[#714B67] hover:bg-[#5b3c53] text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-sm transition active:scale-95 cursor-pointer uppercase tracking-wider"
+                    className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-sm transition active:scale-95 cursor-pointer uppercase tracking-wider"
                   >
                     Publicar Factura
                   </button>
@@ -140,7 +140,7 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
               <div className="flex items-center text-xs font-bold rounded-lg border border-slate-200 overflow-hidden bg-white">
                 <div
                   className={`px-3 py-1.5 ${
-                    selectedInvoice.state === 'draft' ? 'bg-[#714B67] text-white' : 'text-slate-400 bg-slate-50'
+                    selectedInvoice.state === 'draft' ? 'bg-blue-700 text-white' : 'text-slate-400 bg-slate-50'
                   }`}
                 >
                   Borrador
@@ -148,7 +148,7 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                 <div
                   className={`px-3 py-1.5 border-l border-slate-200 ${
                     selectedInvoice.state === 'posted' && selectedInvoice.payment_state !== 'paid'
-                      ? 'bg-[#714B67] text-white'
+                      ? 'bg-blue-700 text-white'
                       : 'text-slate-400 bg-slate-50'
                   }`}
                 >
@@ -263,7 +263,7 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                     </div>
                     <div className="flex justify-between text-sm font-black text-slate-900 pt-2 border-t border-slate-200">
                       <span>Total Factura:</span>
-                      <span className="text-[#714B67]">{formatCOP(selectedInvoice.amount_total)}</span>
+                      <span className="text-blue-700">{formatCOP(selectedInvoice.amount_total)}</span>
                     </div>
                     <div className="flex justify-between text-sm font-bold text-red-600 pt-1">
                       <span>Importe Pendiente:</span>
@@ -337,7 +337,7 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                       onClick={() => handleSelectInvoice(inv.id)}
                       className="hover:bg-slate-50 cursor-pointer transition-colors"
                     >
-                      <td className="py-3 px-4 font-mono font-bold text-[#714B67]">{inv.name}</td>
+                      <td className="py-3 px-4 font-mono font-bold text-blue-700">{inv.name}</td>
                       <td className="py-3 px-4 font-medium text-slate-900">{inv.partner?.name}</td>
                       <td className="py-3 px-4 text-xs text-slate-500">{inv.invoice_date}</td>
                       <td className="py-3 px-4 font-mono text-xs text-indigo-700">{inv.invoice_origin || '-'}</td>
@@ -406,7 +406,7 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                   required
                   value={paymentForm.amount}
                   onChange={(e) => setPaymentForm({ ...paymentForm, amount: parseFloat(e.target.value) || 0 })}
-                  className="w-full px-3 py-1.5 border border-slate-300 rounded font-bold text-lg text-slate-900 focus:ring-1 focus:ring-[#714B67]"
+                  className="w-full px-3 py-1.5 border border-slate-300 rounded font-bold text-lg text-slate-900 focus:ring-1 focus:ring-blue-600"
                 />
                 <span className="text-[11px] text-slate-400 mt-0.5 block">
                   Máximo pendiente: {formatCOP(selectedInvoice?.amount_residual)}
@@ -418,7 +418,7 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                 <select
                   value={paymentForm.payment_method}
                   onChange={(e) => setPaymentForm({ ...paymentForm, payment_method: e.target.value })}
-                  className="w-full px-3 py-1.5 border border-slate-300 rounded bg-white focus:ring-1 focus:ring-[#714B67]"
+                  className="w-full px-3 py-1.5 border border-slate-300 rounded bg-white focus:ring-1 focus:ring-blue-600"
                 >
                   <option value="transfer">Transferencia Bancaria</option>
                   <option value="cash">Efectivo / Caja</option>
@@ -432,7 +432,7 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                   type="text"
                   value={paymentForm.memo}
                   onChange={(e) => setPaymentForm({ ...paymentForm, memo: e.target.value })}
-                  className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-[#714B67]"
+                  className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-blue-600"
                 />
               </div>
 
