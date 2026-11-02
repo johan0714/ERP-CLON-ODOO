@@ -32,6 +32,11 @@ export default function App() {
     setCurrentUser(null);
   };
 
+  const handleUpdateUser = (updatedUser) => {
+    setCurrentUser(updatedUser);
+    localStorage.setItem('erp_user', JSON.stringify(updatedUser));
+  };
+
   const handleSelectApp = (appId) => {
     setActiveApp(appId);
     if (appId === 'sales') setActiveSubView('orders');
@@ -69,6 +74,7 @@ export default function App() {
         activeSubView={activeSubView}
         setActiveSubView={setActiveSubView}
         currentUser={currentUser}
+        onUpdateUser={handleUpdateUser}
         onLogout={handleLogout}
       />
 

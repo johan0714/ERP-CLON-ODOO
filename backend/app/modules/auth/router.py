@@ -41,6 +41,11 @@ class CreateUserRequest(BaseModel):
     city: Optional[str] = None
 
 
+class UpdateProfileRequest(BaseModel):
+    name: Optional[str] = None
+    city: Optional[str] = None
+
+
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> ResUser:
     payload = decode_token(token)
     user_id = payload.get("sub")
@@ -72,6 +77,17 @@ def login(creds: LoginRequest, db: Session = Depends(get_db)):
 
 @router.get("/me", response_model=UserOut)
 def get_me(current_user: ResUser = Depends(get_current_user)):
+    return current_user
+
+
+@router.put("/me", response_model=UserOut)
+def update_me(profile_in: UpdateProfileRequest, current_user: ResUser = Depends(get_current_user), db: Session = Depends(get_db)):
+    if profile_in.name is not None:
+        current_user.name = profile_in.name
+    if profile_in.city is not None:
+        current_user.city = profile_in.city
+    db.commit()
+    db.refresh(current_user)
     return current_user
 
 

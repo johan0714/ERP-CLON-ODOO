@@ -9,8 +9,12 @@ def run_seed():
     db = SessionLocal()
 
     # 0. Usuarios Santander (Bucaramanga y El Centro, Barrancabermeja)
-    if db.query(ResUser).count() == 0:
-        admin_user = ResUser(
+    admin_u = db.query(ResUser).filter(ResUser.email == "admin@empresa.com").first()
+    if admin_u:
+        admin_u.city = "Bucaramanga (Sede Principal)"
+        admin_u.name = "Pedro Albarracín (Admin)"
+    else:
+        admin_u = ResUser(
             name="Pedro Albarracín (Admin)",
             email="admin@empresa.com",
             hashed_password=hash_password("admin123"),
@@ -18,7 +22,14 @@ def run_seed():
             city="Bucaramanga (Sede Principal)",
             avatar_color="bg-[#714B67]"
         )
-        emp_user = ResUser(
+        db.add(admin_u)
+
+    emp_u = db.query(ResUser).filter(ResUser.email == "empleado@empresa.com").first()
+    if emp_u:
+        emp_u.city = "El Centro, Barrancabermeja"
+        emp_u.name = "Operaciones & Logística"
+    else:
+        emp_u = ResUser(
             name="Operaciones & Logística",
             email="empleado@empresa.com",
             hashed_password=hash_password("empleado123"),
@@ -26,8 +37,8 @@ def run_seed():
             city="El Centro, Barrancabermeja",
             avatar_color="bg-emerald-600"
         )
-        db.add_all([admin_user, emp_user])
-        db.commit()
+        db.add(emp_u)
+    db.commit()
 
     # 1. Configurar Secuencias
     sequences = [
