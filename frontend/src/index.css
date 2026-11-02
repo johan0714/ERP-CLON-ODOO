@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply bg-slate-100 text-slate-800 antialiased font-sans;
+  }
+}
+
+/* Odoo styling variables & utilities */
+:root {
+  --odoo-primary: #714B67;
+  --odoo-secondary: #00A09D;
+  --odoo-dark: #2C3E50;
+  --odoo-bg: #F9FAFB;
+}
