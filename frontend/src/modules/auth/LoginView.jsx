@@ -25,7 +25,13 @@ export default function LoginView({ onLoginSuccess }) {
       localStorage.setItem('erp_user', JSON.stringify(res.data.user));
       onLoginSuccess(res.data.user);
     } catch (err) {
-      setError(err.response?.data?.detail || 'Error al iniciar sesión. Revisa correo y clave.');
+      if (err.response?.data?.detail) {
+        setError(err.response.data.detail);
+      } else if (err.message) {
+        setError(`No se pudo conectar con el backend (${err.message}). Verifica que el servicio esté activo en: ${api.defaults.baseURL}`);
+      } else {
+        setError('Error al iniciar sesión. Revisa correo y clave.');
+      }
     } finally {
       setLoading(false);
     }
@@ -139,6 +145,12 @@ export default function LoginView({ onLoginSuccess }) {
                 <span>Medellín (Sucursal)</span>
               </div>
             </button>
+          </div>
+
+          <div className="mt-4 pt-3 border-t border-slate-100 text-center">
+            <span className="text-[10px] text-slate-400 font-mono">
+              API Backend: {api.defaults.baseURL}
+            </span>
           </div>
         </div>
       </div>
