@@ -36,6 +36,9 @@ def get_product(product_id: int, db: Session = Depends(get_db)):
 def create_product(prod_in: ProductCreate, db: Session = Depends(get_db)):
     data = prod_in.model_dump()
     initial_qty = data.pop("initial_qty", 0.0)
+    qty = data.pop("qty_available", None)
+    if qty is not None:
+        initial_qty = float(qty)
     product = ProductProduct(**data, qty_available=initial_qty)
     db.add(product)
     db.commit()
@@ -48,13 +51,28 @@ def update_product(product_id: int, prod_in: ProductCreate, db: Session = Depend
     prod = db.query(ProductProduct).filter(ProductProduct.id == product_id).first()
     if not prod:
         raise HTTPException(status_code=404, detail="Producto no encontrado")
-    data = prod_in.model_dump()
+    data = prod_in.model_dump(exclude_unset=True)
+    if "qty_available" in data and data["qty_available"] is not None:
+        prod.qty_available = float(data["qty_available"])
+    elif "initial_qty" in data and data["initial_qty"] is not None:
+        prod.qty_available = float(data["initial_qty"])
     data.pop("initial_qty", None)
+    data.pop("qty_available", None)
     for key, val in data.items():
         setattr(prod, key, val)
     db.commit()
     db.refresh(prod)
     return prod
+
+
+@router.delete("/products/{product_id}")
+def delete_product(product_id: int, db: Session = Depends(get_db)):
+    prod = db.query(ProductProduct).filter(ProductProduct.id == product_id).first()
+    if not prod:
+        raise HTTPException(status_code=404, detail="Producto no encontrado")
+    prod.active = False
+    db.commit()
+    return {"ok": True, "message": "Producto eliminado del inventario", "id": product_id}
 
 
 # --- ALBARANES / PICKINGS (ENTREGAS Y RECEPCIONES) ---

@@ -46,6 +46,7 @@ class ProductBase(BaseModel):
 
 class ProductCreate(ProductBase):
     initial_qty: Optional[float] = 0.0
+    qty_available: Optional[float] = None
 
 
 class ProductOut(ProductBase):
