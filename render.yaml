@@ -3,8 +3,8 @@ services:
   - type: web
     name: erp-odoo-backend
     env: python
-    buildCommand: "pip install -r backend/requirements.txt && python -m backend.app.seed"
-    startCommand: "python -m uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT"
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: "python -m backend.app.seed && python -m uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT"
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -35,3 +35,4 @@ databases:
   - name: erp-postgres
     databaseName: erp_database
     user: erp_admin
+    plan: basic-256mb

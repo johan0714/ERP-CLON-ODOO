@@ -1,10 +1,17 @@
 import axios from 'axios';
 
-// Si se define VITE_API_URL en la nube (ej. https://api-erp.onrender.com/api), se usa; de lo contrario local
-const baseURL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
+// Normalizar la URL del backend tanto para local como para Render / Vercel
+let rawUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
+
+if (!rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) {
+  rawUrl = `https://${rawUrl}`;
+}
+if (!rawUrl.endsWith('/api')) {
+  rawUrl = rawUrl.endsWith('/') ? `${rawUrl}api` : `${rawUrl}/api`;
+}
 
 const api = axios.create({
-  baseURL,
+  baseURL: rawUrl,
   headers: {
     'Content-Type': 'application/json',
   },
