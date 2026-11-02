@@ -86,7 +86,7 @@ export default function DashboardView({ onNavigateApp, onNewOrder, onNewContact,
       <div className="bg-gradient-to-r from-[#714B67] to-[#4a3144] rounded-2xl p-6 text-white shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <span className="text-xs uppercase tracking-wider font-semibold text-amber-300">
-            ERP Modular v1.0
+            Grupo Soluciones Colombia • ERP Cloud
           </span>
           <h1 className="text-2xl md:text-3xl font-extrabold mt-1">
             Centro de Gestión Empresarial

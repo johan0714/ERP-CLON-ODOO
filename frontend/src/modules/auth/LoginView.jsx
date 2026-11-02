@@ -49,9 +49,9 @@ export default function LoginView({ onLoginSuccess }) {
           <div className="w-16 h-16 bg-[#714B67] text-white rounded-2xl mx-auto flex items-center justify-center shadow-lg mb-3">
             <Layers className="w-8 h-8" />
           </div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">ERP Cloud Connect</h1>
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight">Grupo Soluciones Colombia</h1>
           <p className="text-xs text-slate-500 mt-1">
-            Acceso unificado inter-ciudades para Administradores y Empleados
+            Sistema ERP Empresarial • Bucaramanga & Barrancabermeja
           </p>
         </div>
 

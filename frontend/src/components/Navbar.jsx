@@ -143,8 +143,14 @@ export default function Navbar({
           </nav>
         </div>
 
-        {/* Right: City Sede, User Card & Logout */}
+        {/* Right: Company, City Sede, User Card & Logout */}
         <div className="flex items-center space-x-2 sm:space-x-3">
+          {/* Nombre de la Empresa */}
+          <div className="hidden md:flex items-center space-x-1.5 bg-black/20 px-2.5 py-1 rounded-full text-xs font-semibold text-white/95 border border-white/10">
+            <Building2 className="w-3.5 h-3.5 text-amber-300" />
+            <span>Grupo Soluciones Colombia</span>
+          </div>
+
           {/* Ubicación / Sede (Click para cambiar) */}
           <button
             onClick={() => {
