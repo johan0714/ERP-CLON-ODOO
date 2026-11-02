@@ -3,6 +3,11 @@ import axios from 'axios';
 // Normalizar la URL del backend tanto para local como para Render / Vercel
 let rawUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api';
 
+// Si Render inyecta solo el nombre del servicio ('erp-odoo-backend'), completar con '.onrender.com'
+if (!rawUrl.includes('.') && !rawUrl.includes('localhost') && !rawUrl.includes('127.0.0.1')) {
+  rawUrl = `${rawUrl}.onrender.com`;
+}
+
 if (!rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) {
   rawUrl = `https://${rawUrl}`;
 }

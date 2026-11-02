@@ -25,10 +25,7 @@ services:
         destination: "/index.html"
     envVars:
       - key: VITE_API_URL
-        fromService:
-          type: web
-          name: erp-odoo-backend
-          property: host
+        value: https://erp-odoo-backend.onrender.com/api
 
 databases:
   # 3. Base de Datos PostgreSQL gestionada en la nube
