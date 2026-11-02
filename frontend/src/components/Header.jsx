@@ -41,8 +41,8 @@ export default function Header({
   const subViewNames = {
     main: 'Resumen Ejecutivo',
     orders: 'Pedidos de Venta',
-    pickings: 'Albaranes de Entrega',
-    products: 'Catálogo & Stock',
+    pickings: 'Albaranes de Despacho',
+    products: 'Catálogo de Lubricantes & Filtros',
     invoices: 'Facturas de Cliente',
     customers: 'Clientes',
     suppliers: 'Proveedores',
@@ -114,7 +114,7 @@ export default function Header({
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Buscar pedidos, productos, clientes o facturas..."
+              placeholder="Buscar aceites, filtros, pedidos, clientes o facturas..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-9 pr-4 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"

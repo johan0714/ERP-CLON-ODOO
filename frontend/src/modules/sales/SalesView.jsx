@@ -80,7 +80,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
     setIsCreating(true);
     setNewOrderData({
       partner_id: partners.length > 0 ? partners[0].id : '',
-      note: 'Condiciones de pago: 30 días.',
+      note: 'Condiciones de pago: 30 días. Despacho y entrega de lubricantes/filtros en sede Bucaramanga o El Centro, Barrancabermeja.',
       lines: [
         {
           product_id: products.length > 0 ? products[0].id : '',

@@ -21,7 +21,7 @@ export default function InventoryView({ subView = 'products', onHome }) {
     list_price: 0,
     standard_price: 0,
     initial_qty: 10,
-    uom_name: 'Unidades',
+    uom_name: 'Balde (5 Gal)',
     description: '',
   });
 
@@ -300,7 +300,10 @@ export default function InventoryView({ subView = 'products', onHome }) {
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
             <div className="flex items-center justify-between pb-3 border-b mb-4">
-              <h3 className="text-lg font-bold text-slate-800">Nuevo Producto / Servicio</h3>
+              <div>
+                <h3 className="text-lg font-bold text-slate-800">Nuevo Lubricante / Filtro</h3>
+                <p className="text-xs text-slate-500">Catálogo oficial de Grupo Soluciones Colombia</p>
+              </div>
               <button
                 onClick={() => setProductModalOpen(false)}
                 className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
@@ -311,11 +314,11 @@ export default function InventoryView({ subView = 'products', onHome }) {
 
             <form onSubmit={handleCreateProduct} className="space-y-4 text-sm">
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Nombre del Producto *</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-1">Nombre del Lubricante o Filtro *</label>
                 <input
                   type="text"
                   required
-                  placeholder="Ej. Servidor Blade 2U"
+                  placeholder="Ej. Aceite Motor 15W-40 CI-4 o Filtro P552100"
                   value={productForm.name}
                   onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
                   className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-blue-600"
@@ -324,24 +327,24 @@ export default function InventoryView({ subView = 'products', onHome }) {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">Referencia Interna (SKU)</label>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Código / Referencia (SKU)</label>
                   <input
                     type="text"
-                    placeholder="SRV-2U"
+                    placeholder="LUB-15W40 o FLT-P552100"
                     value={productForm.default_code}
                     onChange={(e) => setProductForm({ ...productForm, default_code: e.target.value })}
                     className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-blue-600"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">Tipo de Producto</label>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Tipo de Ítem</label>
                   <select
                     value={productForm.type}
                     onChange={(e) => setProductForm({ ...productForm, type: e.target.value })}
                     className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-blue-600 bg-white"
                   >
-                    <option value="product">Almacenable</option>
-                    <option value="service">Servicio</option>
+                    <option value="product">Lubricante / Filtro Físico</option>
+                    <option value="service">Servicio / Mantenimiento</option>
                   </select>
                 </div>
               </div>
@@ -359,7 +362,7 @@ export default function InventoryView({ subView = 'products', onHome }) {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1">Coste (COP $)</label>
+                  <label className="block text-xs font-semibold text-slate-600 mb-1">Coste Adquisición (COP $)</label>
                   <input
                     type="number"
                     step="1"
@@ -382,9 +385,10 @@ export default function InventoryView({ subView = 'products', onHome }) {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-600 mb-1">Unidad de Medida</label>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Unidad de Medida (Presentación)</label>
                     <input
                       type="text"
+                      placeholder="Tambor (55 Gal), Balde (5 Gal), Unidades"
                       value={productForm.uom_name}
                       onChange={(e) => setProductForm({ ...productForm, uom_name: e.target.value })}
                       className="w-full px-3 py-1.5 border border-slate-300 rounded focus:ring-1 focus:ring-blue-600"

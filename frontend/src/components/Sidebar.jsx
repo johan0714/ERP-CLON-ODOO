@@ -51,14 +51,14 @@ export default function Sidebar({
         {
           id: 'inventory',
           subView: 'pickings',
-          label: 'Albaranes & Envíos',
+          label: 'Albaranes & Despachos',
           icon: Truck,
           badge: null
         },
         {
           id: 'inventory',
           subView: 'products',
-          label: 'Productos & Stock',
+          label: 'Lubricantes & Filtros',
           icon: Boxes,
           badge: null
         }
@@ -132,8 +132,8 @@ export default function Sidebar({
               <span className="block text-sm font-bold text-white tracking-tight leading-tight truncate">
                 Grupo Soluciones
               </span>
-              <span className="block text-[11px] font-medium text-blue-400 uppercase tracking-wider">
-                Colombia ERP
+              <span className="block text-[10px] font-bold text-blue-400 uppercase tracking-wider truncate">
+                Lubricantes & Filtros
               </span>
             </div>
           )}

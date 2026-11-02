@@ -126,13 +126,13 @@ export default function DashboardView({ onNavigateApp, onNewOrder, onNewContact,
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-700/60 border border-blue-400/30 text-[11px] font-semibold text-blue-200 mb-2">
             <span>Grupo Soluciones Colombia</span>
             <span>•</span>
-            <span>Tablero de Control Empresarial</span>
+            <span>Distribución de Lubricantes & Filtros</span>
           </div>
           <h1 className="text-2xl md:text-3xl font-black tracking-tight">
-            Panel de Operaciones & Gestión ERP
+            Control de Lubricantes, Filtros & Operaciones ERP
           </h1>
           <p className="text-blue-100/80 text-xs md:text-sm mt-1 max-w-2xl leading-relaxed">
-            Monitoreo en tiempo real de ventas, cobros, inventario multisede y despachos entre Bucaramanga y Barrancabermeja.
+            Gestión integral de tambores, baldes, filtros de aceite, aire y combustible, ventas a flotas de transporte, despachos en El Centro (Barrancabermeja) y facturación en Bucaramanga.
           </p>
         </div>
 
@@ -143,14 +143,14 @@ export default function DashboardView({ onNavigateApp, onNewOrder, onNewContact,
             className="flex items-center space-x-1.5 bg-white text-blue-900 hover:bg-blue-50 font-bold px-4 py-2.5 rounded-xl text-xs shadow-md shadow-slate-900/10 transition-all cursor-pointer active:scale-95"
           >
             <PlusCircle className="w-4 h-4 text-blue-700" />
-            <span>Nuevo Pedido</span>
+            <span>+ Cotizar Lubricantes</span>
           </button>
           <button
             onClick={onNewProduct}
             className="flex items-center space-x-1.5 bg-blue-800/80 hover:bg-blue-800 text-white font-semibold px-4 py-2.5 rounded-xl text-xs border border-blue-400/30 transition-all cursor-pointer active:scale-95"
           >
             <Package className="w-4 h-4 text-blue-300" />
-            <span>+ Producto</span>
+            <span>+ Nuevo Filtro / Aceite</span>
           </button>
         </div>
       </div>
@@ -322,7 +322,7 @@ export default function DashboardView({ onNavigateApp, onNewOrder, onNewContact,
                 <span className="text-[10px] text-blue-600 font-bold group-hover:underline">Ir &rarr;</span>
               </div>
               <p className="text-[11px] text-slate-500 mt-0.5">
-                Cree cotizaciones. Al confirmar, se genera el albarán en Almacén automáticamente.
+                Cotice aceites 15W-40, hidráulicos ISO 68 y filtros por unidad para flotas y maquinaria pesada.
               </p>
             </div>
 
@@ -335,7 +335,7 @@ export default function DashboardView({ onNavigateApp, onNewOrder, onNewContact,
                 <span className="text-[10px] text-amber-600 font-bold group-hover:underline">Ir &rarr;</span>
               </div>
               <p className="text-[11px] text-slate-500 mt-0.5">
-                Revise albaranes de salida y pulse 'Validar Entrega' para descontar stock físico real.
+                Revise albaranes de salida en Barrancabermeja y valide entregas para descontar tambores y filtros del stock.
               </p>
             </div>
 
@@ -348,7 +348,7 @@ export default function DashboardView({ onNavigateApp, onNewOrder, onNewContact,
                 <span className="text-[10px] text-emerald-600 font-bold group-hover:underline">Ir &rarr;</span>
               </div>
               <p className="text-[11px] text-slate-500 mt-0.5">
-                Emita facturas electrónicas e ingrese pagos con cálculo automático del saldo pendiente.
+                Emita facturas comerciales e ingrese cobros a empresas de transporte y contratistas del sector.
               </p>
             </div>
           </div>

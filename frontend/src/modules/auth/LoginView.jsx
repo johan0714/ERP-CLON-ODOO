@@ -55,11 +55,11 @@ export default function LoginView({ onLoginSuccess }) {
             <Building2 className="w-8 h-8" />
           </div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight">Grupo Soluciones Colombia</h1>
-          <p className="text-xs font-semibold text-blue-700 uppercase tracking-wider mt-1">
-            Sistema ERP Empresarial
+          <p className="text-xs font-bold text-blue-700 uppercase tracking-wider mt-1">
+            Distribución de Lubricantes & Filtros
           </p>
           <p className="text-[11px] text-slate-500 mt-0.5">
-            Acceso unificado Bucaramanga & Barrancabermeja
+            Sede Bucaramanga (Gerencia) • Sede El Centro, Barrancabermeja (Almacén)
           </p>
         </div>
 
@@ -172,7 +172,7 @@ export default function LoginView({ onLoginSuccess }) {
               <div className="text-[11px] text-slate-800 font-bold truncate">Operaciones & Almacén</div>
               <div className="text-[10px] text-slate-500 flex items-center space-x-1 mt-0.5">
                 <MapPin className="w-3 h-3 text-emerald-600 shrink-0" />
-                <span className="truncate">Barrancabermeja</span>
+                <span className="truncate">El Centro, B/bermeja</span>
               </div>
             </button>
           </div>

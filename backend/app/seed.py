@@ -20,17 +20,17 @@ def run_seed():
             hashed_password=hash_password("admin123"),
             role="admin",
             city="Bucaramanga (Sede Principal)",
-            avatar_color="bg-[#714B67]"
+            avatar_color="bg-blue-700"
         )
         db.add(admin_u)
 
     emp_u = db.query(ResUser).filter(ResUser.email == "empleado@empresa.com").first()
     if emp_u:
         emp_u.city = "El Centro, Barrancabermeja"
-        emp_u.name = "Operaciones & Logística"
+        emp_u.name = "Operaciones & Almacén"
     else:
         emp_u = ResUser(
-            name="Operaciones & Logística",
+            name="Operaciones & Almacén",
             email="empleado@empresa.com",
             hashed_password=hash_password("empleado123"),
             role="employee",
@@ -53,148 +53,232 @@ def run_seed():
         existing = db.query(IrSequence).filter(IrSequence.code == s_data["code"]).first()
         if not existing:
             db.add(IrSequence(**s_data))
+    db.commit()
 
-    # 2. Contactos / Clientes / Proveedores (Santander: Bucaramanga y Barrancabermeja)
-    if db.query(ResPartner).count() == 0:
-        partners = [
-            ResPartner(
-                name="Servicios Industriales & Logísticos del Magdalena Medio S.A.S.",
-                is_company=True,
-                email="gerencia@servicioselcentro.com",
-                phone="+57 607 622 8900",
-                vat="901.458.789-2",
-                street="Vía Principal Km 8, Sector Campo 22",
-                city="El Centro, Barrancabermeja",
-                country="Colombia",
-                is_customer=True,
-                is_supplier=False,
-                comment="Cliente industrial en El Centro, Barrancabermeja"
-            ),
-            ResPartner(
-                name="Distribuidora Comercial del Oriente S.A.S.",
-                is_company=True,
-                email="ventas@distrioriente.com.co",
-                phone="+57 607 645 1234",
-                vat="890.123.456-7",
-                street="Carrera 27 # 36-14, Cabecera",
-                city="Bucaramanga",
-                country="Colombia",
-                is_customer=False,
-                is_supplier=True,
-                comment="Proveedor mayorista en Bucaramanga"
-            ),
-            ResPartner(
-                name="Contratista & Consultor Técnico",
-                is_company=False,
-                email="contratista@santander.co",
-                phone="+57 315 987 6543",
-                vat="1.098.345.678",
-                street="Calle 50 # 18-25",
-                city="Barrancabermeja",
-                country="Colombia",
-                is_customer=True,
-                is_supplier=False,
-                comment="Operaciones de campo"
-            ),
-        ]
-        db.add_all(partners)
-        db.commit()
+    # 2. Clientes y Proveedores del Sector Lubricantes, Transporte y Petróleo
+    lub_partners = [
+        {
+            "name": "Transportes & Volquetas Santander S.A.S.",
+            "is_company": True,
+            "email": "mantenimiento@transportessantander.co",
+            "phone": "+57 607 645 8890",
+            "vat": "900.567.890-1",
+            "street": "Carrera 15 # 22-45, Vía Palenque",
+            "city": "Bucaramanga (Sede Principal)",
+            "country": "Colombia",
+            "is_customer": True,
+            "is_supplier": False,
+            "comment": "Flota de 35 mulas y volquetas de carga pesada. Consumo mensual de 15W-40 y filtros."
+        },
+        {
+            "name": "Consorcio Petrolero & Maquinaria El Centro",
+            "is_company": True,
+            "email": "compras@consorcioelcentro.com",
+            "phone": "+57 607 622 3400",
+            "vat": "901.345.678-4",
+            "street": "Vía Principal Corregimiento El Centro Km 12",
+            "city": "El Centro, Barrancabermeja",
+            "country": "Colombia",
+            "is_customer": True,
+            "is_supplier": False,
+            "comment": "Equipos de perforación, generadores y retroexcavadoras. Requiere ISO 68 y 15W-40."
+        },
+        {
+            "name": "Distribuidora Mayorista de Lubricantes & Grasas del Oriente",
+            "is_company": True,
+            "email": "ventas@distrilubricantes.com.co",
+            "phone": "+57 607 671 2200",
+            "vat": "890.987.654-3",
+            "street": "Zona Industrial Chimitá Bodega 14",
+            "city": "Bucaramanga (Sede Principal)",
+            "country": "Colombia",
+            "is_customer": False,
+            "is_supplier": True,
+            "comment": "Proveedor principal de tambores, baldes y cajas de aceite mineral y sintético."
+        },
+        {
+            "name": "Importadora Nacional de Filtración Industrial S.A.S.",
+            "is_company": True,
+            "email": "pedidos@filtrosnacionales.com",
+            "phone": "+57 607 633 4567",
+            "vat": "860.112.233-9",
+            "street": "Autopista Bucaramanga - Girón Km 4",
+            "city": "Bucaramanga (Sede Principal)",
+            "country": "Colombia",
+            "is_customer": False,
+            "is_supplier": True,
+            "comment": "Distribuidor mayorista de filtros de aceite, aire, trampa de agua y combustible Donaldson y Fleetguard."
+        }
+    ]
 
-    # 3. Productos y Servicios en Pesos Colombianos (COP)
-    if db.query(ProductProduct).count() == 0:
-        products = [
-            ProductProduct(
-                name="Laptop Ultrabook Pro 15\"",
-                default_code="LAP-ULTRA-15",
-                type="product",
-                list_price=4500000.0,
-                standard_price=3200000.0,
-                qty_available=15.0,
-                uom_name="Unidades",
-                description="Portátil empresarial Intel i7, 32GB RAM, 1TB SSD NVMe",
-                image_url="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400"
-            ),
-            ProductProduct(
-                name="Monitor Curvo 27\" UltraHD",
-                default_code="MON-27-UHD",
-                type="product",
-                list_price=1250000.0,
-                standard_price=850000.0,
-                qty_available=28.0,
-                uom_name="Unidades",
-                description="Panel IPS 144Hz, HDR400, conexiones HDMI 2.1 y DisplayPort",
-                image_url="https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400"
-            ),
-            ProductProduct(
-                name="Teclado Mecánico Ergonómico",
-                default_code="KB-MECH-ERG",
-                type="product",
-                list_price=350000.0,
-                standard_price=180000.0,
-                qty_available=45.0,
-                uom_name="Unidades",
-                description="Switches táctiles silenciosos, retroiluminación RGB",
-                image_url="https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400"
-            ),
-            ProductProduct(
-                name="Consultoría e Instalación IT (Hora)",
-                default_code="SRV-CONSULT-IT",
-                type="service",
-                list_price=150000.0,
-                standard_price=80000.0,
-                qty_available=0.0,
-                uom_name="Horas",
-                description="Servicio técnico especializado por horas"
-            ),
-        ]
-        db.add_all(products)
-        db.commit()
+    for p_info in lub_partners:
+        p_exist = db.query(ResPartner).filter(ResPartner.vat == p_info["vat"]).first()
+        if not p_exist:
+            db.add(ResPartner(**p_info))
+    db.commit()
 
-    # 4. Crear una orden de venta de ejemplo ya cargada en COP
-    partner_demo = db.query(ResPartner).filter(ResPartner.is_customer == True).first()
-    prod_laptop = db.query(ProductProduct).filter(ProductProduct.default_code == "LAP-ULTRA-15").first()
-    prod_monitor = db.query(ProductProduct).filter(ProductProduct.default_code == "MON-27-UHD").first()
+    # 3. Catálogo Especializado de Lubricantes y Filtros (Pesos Colombianos - COP)
+    lub_products = [
+        {
+            "default_code": "LUB-15W40-TAMB",
+            "name": "Aceite Motor 15W-40 CI-4/SL (Tambor 55 Galones)",
+            "type": "product",
+            "list_price": 3850000.0,
+            "standard_price": 2850000.0,
+            "qty_available": 18.0,
+            "uom_name": "Tambor (55 Gal)",
+            "description": "Lubricante multigrado mineral de alto rendimiento para motores diésel de carga pesada y flotas.",
+        },
+        {
+            "default_code": "LUB-15W40-BALD",
+            "name": "Aceite Motor 15W-40 CI-4/SL (Balde 5 Galones)",
+            "type": "product",
+            "list_price": 360000.0,
+            "standard_price": 265000.0,
+            "qty_available": 45.0,
+            "uom_name": "Balde (5 Gal)",
+            "description": "Presentación estándar para cambio de aceite en camiones, volquetas y maquinaria pesada.",
+        },
+        {
+            "default_code": "LUB-HIDR-ISO68",
+            "name": "Aceite Hidráulico ISO 68 Antidesgaste (Tambor 55 Galones)",
+            "type": "product",
+            "list_price": 3250000.0,
+            "standard_price": 2400000.0,
+            "qty_available": 12.0,
+            "uom_name": "Tambor (55 Gal)",
+            "description": "Fluido hidráulico de alta estabilidad térmica para retroexcavadoras, grúas y sistemas industriales en El Centro.",
+        },
+        {
+            "default_code": "LUB-TRANS-85W140",
+            "name": "Aceite de Transmisión & Diferencial 85W-140 GL-5 (Balde 5 Gal)",
+            "type": "product",
+            "list_price": 395000.0,
+            "standard_price": 290000.0,
+            "qty_available": 24.0,
+            "uom_name": "Balde (5 Gal)",
+            "description": "Aceite para engranajes hipoidales sometidos a cargas de impacto y extrema presión.",
+        },
+        {
+            "default_code": "FLT-OIL-P552100",
+            "name": "Filtro de Aceite Lubricante Heavy Duty P552100",
+            "type": "product",
+            "list_price": 95000.0,
+            "standard_price": 62000.0,
+            "qty_available": 60.0,
+            "uom_name": "Unidades",
+            "description": "Filtro blindado tipo spin-on para motores Cummins ISX, Caterpillar C15 y Detroit Diésel.",
+        },
+        {
+            "default_code": "FLT-SEP-FS19732",
+            "name": "Filtro Separador Combustible y Trampa de Agua FS19732",
+            "type": "product",
+            "list_price": 125000.0,
+            "standard_price": 84000.0,
+            "qty_available": 35.0,
+            "uom_name": "Unidades",
+            "description": "Elemento filtrante de combustible con vaso colector de agua y drenaje manual para ACPM colombiano.",
+        },
+        {
+            "default_code": "FLT-AIR-P777868",
+            "name": "Filtro de Aire Primario Radial Seal P777868",
+            "type": "product",
+            "list_price": 198000.0,
+            "standard_price": 138000.0,
+            "qty_available": 4.0, # Stock bajo para activar alertas visuales
+            "uom_name": "Unidades",
+            "description": "Cartucho de aire para trabajo pesado en ambientes con alta concentración de polvo y trocha.",
+        },
+        {
+            "default_code": "GRS-EP2-LITIO",
+            "name": "Grasa Azul Extrema Presión EP-2 Complejo de Litio (Balde 35 lb)",
+            "type": "product",
+            "list_price": 420000.0,
+            "standard_price": 305000.0,
+            "qty_available": 0.0, # Agotado para activar alerta roja
+            "uom_name": "Balde (35 lb)",
+            "description": "Grasa con polímeros adhesivos de máxima resistencia al lavado por agua para chasis y quinta rueda.",
+        },
+        {
+            "default_code": "SRV-LUB-FLOTA",
+            "name": "Servicio de Mantenimiento Preventivo & Engrase de Flota",
+            "type": "service",
+            "list_price": 180000.0,
+            "standard_price": 75000.0,
+            "qty_available": 0.0,
+            "uom_name": "Servicio",
+            "description": "Mano de obra técnica especializada en lubricación, cambio de filtros y revisión de fluidos en taller o campo.",
+        }
+    ]
 
-    if db.query(SaleOrder).count() == 0 and partner_demo and prod_laptop and prod_monitor:
-        so = SaleOrder(
-            name="SO-1000",
-            partner_id=partner_demo.id,
-            state="draft",
-            invoice_status="no",
-            delivery_status="pending",
-            amount_untaxed=5750000.0,
-            amount_tax=1092500.0,
-            amount_total=6842500.0,
-            note="Presupuesto para renovación de equipo tecnológico corporativo. Precios en COP (IVA 19%)."
-        )
-        db.add(so)
-        db.flush()
+    # Actualizar o agregar productos del sector Lubricantes y Filtros
+    # También actualizar productos genéricos previos (Laptop, Monitor, etc.) si existen
+    for p_data in lub_products:
+        prod = db.query(ProductProduct).filter(ProductProduct.default_code == p_data["default_code"]).first()
+        if not prod:
+            db.add(ProductProduct(**p_data))
+        else:
+            prod.name = p_data["name"]
+            prod.list_price = p_data["list_price"]
+            prod.standard_price = p_data["standard_price"]
+            prod.uom_name = p_data["uom_name"]
+            prod.description = p_data["description"]
 
-        sol1 = SaleOrderLine(
-            order_id=so.id,
-            product_id=prod_laptop.id,
-            name=prod_laptop.name,
-            product_uom_qty=1.0,
-            price_unit=4500000.0,
-            tax_percent=19.0,
-            price_subtotal=4500000.0,
-            price_total=5355000.0
-        )
-        sol2 = SaleOrderLine(
-            order_id=so.id,
-            product_id=prod_monitor.id,
-            name=prod_monitor.name,
-            product_uom_qty=1.0,
-            price_unit=1250000.0,
-            tax_percent=19.0,
-            price_subtotal=1250000.0,
-            price_total=1487500.0
-        )
-        db.add_all([sol1, sol2])
-        db.commit()
+    # Reemplazar los productos informáticos iniciales para unificar el catálogo a Lubricantes y Filtros
+    old_laptop = db.query(ProductProduct).filter(ProductProduct.default_code == "LAP-ULTRA-15").first()
+    if old_laptop:
+        old_laptop.default_code = "LUB-15W40-TAMB"
+        old_laptop.name = "Aceite Motor 15W-40 CI-4/SL (Tambor 55 Galones)"
+        old_laptop.list_price = 3850000.0
+        old_laptop.standard_price = 2850000.0
+        old_laptop.uom_name = "Tambor (55 Gal)"
+        old_laptop.description = "Lubricante multigrado mineral de alto rendimiento para flotas pesadas."
 
+    old_monitor = db.query(ProductProduct).filter(ProductProduct.default_code == "MON-27-UHD").first()
+    if old_monitor:
+        old_monitor.default_code = "FLT-OIL-P552100"
+        old_monitor.name = "Filtro de Aceite Lubricante Heavy Duty P552100"
+        old_monitor.list_price = 95000.0
+        old_monitor.standard_price = 62000.0
+        old_monitor.uom_name = "Unidades"
+        old_monitor.description = "Filtro blindado tipo spin-on para motores diésel de servicio pesado."
+
+    old_kb = db.query(ProductProduct).filter(ProductProduct.default_code == "KB-MECH-ERG").first()
+    if old_kb:
+        old_kb.default_code = "FLT-SEP-FS19732"
+        old_kb.name = "Filtro Separador Combustible y Trampa de Agua FS19732"
+        old_kb.list_price = 125000.0
+        old_kb.standard_price = 84000.0
+        old_kb.uom_name = "Unidades"
+        old_kb.description = "Elemento separador de agua/combustible para maquinaria y camiones."
+
+    old_srv = db.query(ProductProduct).filter(ProductProduct.default_code == "SRV-CONSULT-IT").first()
+    if old_srv:
+        old_srv.default_code = "SRV-LUB-FLOTA"
+        old_srv.name = "Servicio de Mantenimiento Preventivo & Engrase de Flota"
+        old_srv.list_price = 180000.0
+        old_srv.standard_price = 75000.0
+        old_srv.uom_name = "Servicio"
+        old_srv.description = "Mano de obra técnica en cambio de aceites y filtros."
+
+    db.commit()
+
+    # Actualizar cualquier pedido de venta existente para que refleje lubricantes
+    for so in db.query(SaleOrder).all():
+        if "tecnológico" in (so.note or "") or "Laptop" in (so.note or "") or so.note == "Presupuesto para renovación de equipo tecnológico corporativo. Precios en COP (IVA 19%).":
+            so.note = "Cotización de suministro de lubricantes y filtros para mantenimiento de flota. Entrega en Bucaramanga / El Centro, Barrancabermeja."
+
+    for line in db.query(SaleOrderLine).all():
+        if "Laptop" in line.name:
+            line.name = "Aceite Motor 15W-40 CI-4/SL (Tambor 55 Galones)"
+        elif "Monitor" in line.name:
+            line.name = "Filtro de Aceite Lubricante Heavy Duty P552100"
+        elif "Teclado" in line.name:
+            line.name = "Filtro Separador Combustible y Trampa de Agua FS19732"
+
+    db.commit()
     db.close()
-    print("Seed data colombiana (COP) cargada con éxito!")
+    print("Seed data colombiana especializada en Lubricantes y Filtros cargada con éxito!")
 
 if __name__ == "__main__":
     run_seed()
