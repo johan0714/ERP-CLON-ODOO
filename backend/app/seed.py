@@ -286,6 +286,18 @@ def run_seed():
         elif "Teclado" in line.name:
             line.name = "Filtro Separador Combustible y Trampa de Agua FS19732"
 
+    # 7. Configuración DIAN / Factus
+    from backend.app.models.models import DianConfig
+    dian_conf = db.query(DianConfig).first()
+    if not dian_conf:
+        dian_conf = DianConfig(
+            provider="factus",
+            is_sandbox=True,
+            company_nit="901.458.921-3",
+            company_name="Grupo Soluciones Colombia S.A.S."
+        )
+        db.add(dian_conf)
+
     db.commit()
     db.close()
     print("Seed data colombiana especializada en Lubricantes y Filtros cargada con éxito!")

@@ -188,6 +188,20 @@ class AccountPaymentOut(BaseModel):
         from_attributes = True
 
 
+class DianInvoiceStampOut(BaseModel):
+    id: int
+    status: str
+    cufe: Optional[str] = None
+    dian_number: Optional[str] = None
+    qr_data: Optional[str] = None
+    pdf_url: Optional[str] = None
+    xml_url: Optional[str] = None
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
 class AccountMoveOut(BaseModel):
     id: int
     name: str
@@ -208,6 +222,26 @@ class AccountMoveOut(BaseModel):
     partner: Optional[PartnerOut] = None
     invoice_lines: List[AccountMoveLineOut] = []
     payments: List[AccountPaymentOut] = []
+    dian_stamp: Optional[DianInvoiceStampOut] = None
 
     class Config:
         from_attributes = True
+
+
+class DianConfigIn(BaseModel):
+    provider: str = "factus"
+    is_sandbox: bool = True
+    client_id: Optional[str] = None
+    client_secret: Optional[str] = None
+    token: Optional[str] = None
+    company_nit: Optional[str] = "901234567"
+    company_name: Optional[str] = "Grupo Soluciones Colombia"
+
+
+class DianConfigOut(DianConfigIn):
+    id: int
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
+

@@ -2,7 +2,24 @@ import React, { useState, useEffect } from 'react';
 import api from '../../api/client';
 import ControlPanel from '../../components/ControlPanel';
 import { formatCOP } from '../../utils/format';
-import { Receipt, CheckCircle, CreditCard, ArrowLeft, X, DollarSign, Calendar } from 'lucide-react';
+import {
+  Receipt,
+  CheckCircle,
+  CreditCard,
+  ArrowLeft,
+  X,
+  DollarSign,
+  Calendar,
+  ShieldCheck,
+  Send,
+  ExternalLink,
+  Copy,
+  Check,
+  Settings,
+  FileCode,
+  RefreshCw,
+  AlertCircle
+} from 'lucide-react';
 
 export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
   const [invoices, setInvoices] = useState([]);
@@ -18,9 +35,80 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
     memo: '',
   });
 
+  // DIAN / Factus Modal State
+  const [dianModalOpen, setDianModalOpen] = useState(false);
+  const [dianConfig, setDianConfig] = useState({
+    provider: 'factus',
+    is_sandbox: true,
+    client_id: '',
+    client_secret: '',
+    token: '',
+    company_nit: '901.458.921-3',
+    company_name: 'Grupo Soluciones Colombia S.A.S.',
+  });
+  const [testingDian, setTestingDian] = useState(false);
+  const [dianTestResult, setDianTestResult] = useState(null);
+  const [emittingDian, setEmittingDian] = useState(false);
+  const [copiedCufe, setCopiedCufe] = useState(false);
+
   useEffect(() => {
     fetchInvoices();
+    fetchDianConfig();
   }, []);
+
+  const fetchDianConfig = async () => {
+    try {
+      const res = await api.get('/invoicing/dian/config');
+      if (res.data) setDianConfig(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSaveDianConfig = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await api.post('/invoicing/dian/config', dianConfig);
+      setDianConfig(res.data);
+      alert('Configuración de Facturación Electrónica DIAN / Factus guardada correctamente');
+    } catch (err) {
+      alert('Error al guardar configuración: ' + (err.response?.data?.detail || err.message));
+    }
+  };
+
+  const handleTestDianConnection = async () => {
+    try {
+      setTestingDian(true);
+      setDianTestResult(null);
+      const res = await api.post('/invoicing/dian/test-connection');
+      setDianTestResult(res.data);
+    } catch (err) {
+      setDianTestResult({ success: false, message: err.response?.data?.detail || err.message });
+    } finally {
+      setTestingDian(false);
+    }
+  };
+
+  const handleEmitDian = async (invId) => {
+    try {
+      setEmittingDian(true);
+      const res = await api.post(`/invoicing/${invId}/emit-dian`);
+      const updated = await api.get(`/invoicing/${invId}`);
+      setSelectedInvoice(updated.data);
+      fetchInvoices();
+      alert(`¡Factura electrónica emitida exitosamente a la DIAN!\nConsecutivo: ${res.data.dian_number}\nCUFE: ${res.data.cufe?.substring(0, 32)}...`);
+    } catch (err) {
+      alert('Error al emitir factura electrónica a la DIAN: ' + (err.response?.data?.detail || err.message));
+    } finally {
+      setEmittingDian(false);
+    }
+  };
+
+  const handleCopyCufe = (cufe) => {
+    navigator.clipboard.writeText(cufe);
+    setCopiedCufe(true);
+    setTimeout(() => setCopiedCufe(false), 2000);
+  };
 
   useEffect(() => {
     if (defaultInvoiceId) {
@@ -97,15 +185,26 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
         onSearchChange={!selectedInvoice ? setSearchTerm : undefined}
         showViewSwitcher={false}
         extraButtons={
-          selectedInvoice && (
+          <div className="flex items-center space-x-2">
             <button
-              onClick={() => setSelectedInvoice(null)}
-              className="flex items-center space-x-1 text-slate-600 hover:text-slate-900 border border-slate-300 px-2.5 py-1.5 rounded text-xs font-semibold cursor-pointer"
+              onClick={() => setDianModalOpen(true)}
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 text-xs font-bold transition shadow-2xs cursor-pointer"
+              title="Configurar credenciales de Facturación Electrónica DIAN / Factus"
             >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Volver al listado</span>
+              <ShieldCheck className="w-4 h-4 text-blue-600" />
+              <span>Configuración DIAN (Factus)</span>
             </button>
-          )
+
+            {selectedInvoice && (
+              <button
+                onClick={() => setSelectedInvoice(null)}
+                className="flex items-center space-x-1 text-slate-600 hover:text-slate-900 border border-slate-300 px-2.5 py-1.5 rounded text-xs font-semibold cursor-pointer"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Volver al listado</span>
+              </button>
+            )}
+          </div>
         }
       />
 
@@ -122,6 +221,17 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                     className="bg-blue-700 hover:bg-blue-800 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-sm transition active:scale-95 cursor-pointer uppercase tracking-wider"
                   >
                     Publicar Factura
+                  </button>
+                )}
+
+                {selectedInvoice.state === 'posted' && !selectedInvoice.dian_stamp && (
+                  <button
+                    onClick={() => handleEmitDian(selectedInvoice.id)}
+                    disabled={emittingDian}
+                    className="bg-indigo-700 hover:bg-indigo-800 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-sm transition active:scale-95 cursor-pointer uppercase tracking-wider flex items-center space-x-1.5 disabled:opacity-50"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>{emittingDian ? 'Transmitiendo a DIAN...' : 'Emitir Factura a la DIAN'}</span>
                   </button>
                 )}
 
@@ -181,6 +291,59 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                   </div>
                 )}
               </div>
+
+              {/* Banner / Tarjeta de Certificación DIAN */}
+              {selectedInvoice.dian_stamp && (
+                <div className="bg-emerald-50/70 border border-emerald-300 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-2xs">
+                  <div className="space-y-1">
+                    <div className="flex items-center space-x-2">
+                      <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
+                      <span className="font-extrabold text-emerald-950 text-sm">
+                        Factura Electrónica Validada y Aceptada por la DIAN
+                      </span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-200 text-emerald-900 font-mono">
+                        {selectedInvoice.dian_stamp.dian_number}
+                      </span>
+                    </div>
+                    <div className="text-xs text-slate-600 font-mono flex items-center space-x-2">
+                      <span className="font-bold text-slate-800">CUFE:</span>
+                      <span className="truncate max-w-[280px] sm:max-w-md bg-white/80 px-2 py-0.5 rounded border border-emerald-200 text-[11px]">
+                        {selectedInvoice.dian_stamp.cufe}
+                      </span>
+                      <button
+                        onClick={() => handleCopyCufe(selectedInvoice.dian_stamp.cufe)}
+                        className="text-slate-400 hover:text-blue-600 p-1 cursor-pointer"
+                        title="Copiar CUFE completo"
+                      >
+                        {copiedCufe ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2 shrink-0">
+                    {selectedInvoice.dian_stamp.pdf_url && (
+                      <a
+                        href={selectedInvoice.dian_stamp.pdf_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center space-x-1.5 px-3 py-1.5 bg-white border border-emerald-300 rounded-lg text-emerald-800 text-xs font-bold hover:bg-emerald-100/50 shadow-2xs"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span>Ver en DIAN</span>
+                      </a>
+                    )}
+                    <a
+                      href={`${api.defaults.baseURL}/invoicing/${selectedInvoice.id}/dian-xml`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center space-x-1.5 px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-700 text-xs font-bold hover:bg-slate-50 shadow-2xs"
+                    >
+                      <FileCode className="w-3.5 h-3.5 text-blue-600" />
+                      <span>XML UBL 2.1</span>
+                    </a>
+                  </div>
+                </div>
+              )}
 
               {/* Cabecera */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 bg-slate-50 p-4 rounded-xl border border-slate-200/80">
@@ -325,6 +488,7 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                   <th className="py-3 px-4">Cliente</th>
                   <th className="py-3 px-4">Fecha</th>
                   <th className="py-3 px-4">Origen</th>
+                  <th className="py-3 px-4 text-center">Estado DIAN</th>
                   <th className="py-3 px-4 text-right">Total</th>
                   <th className="py-3 px-4 text-right">Pendiente</th>
                   <th className="py-3 px-4 text-center">Estado Pago</th>
@@ -334,7 +498,7 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
               <tbody className="divide-y divide-slate-100">
                 {invoices.length === 0 ? (
                   <tr>
-                    <td colSpan="8" className="py-8 text-center text-slate-400">
+                    <td colSpan="9" className="py-8 text-center text-slate-400">
                       No hay facturas registradas. Puedes generarlas desde pedidos de venta confirmados.
                     </td>
                   </tr>
@@ -349,6 +513,22 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                       <td className="py-3 px-4 font-medium text-slate-900">{inv.partner?.name}</td>
                       <td className="py-3 px-4 text-xs text-slate-500">{inv.invoice_date}</td>
                       <td className="py-3 px-4 font-mono text-xs text-indigo-700">{inv.invoice_origin || '-'}</td>
+                      <td className="py-3 px-4 text-center">
+                        {inv.dian_stamp?.status === 'accepted' ? (
+                          <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>Aceptada DIAN</span>
+                          </span>
+                        ) : inv.state === 'posted' ? (
+                          <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                            <span>Lista p/ DIAN</span>
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-500">
+                            <span>Borrador</span>
+                          </span>
+                        )}
+                      </td>
                       <td className="py-3 px-4 text-right font-black text-slate-900">
                         {formatCOP(inv.amount_total)}
                       </td>
@@ -458,6 +638,175 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                 >
                   Confirmar Pago
                 </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL CONFIGURACIÓN FACTURACIÓN ELECTRÓNICA DIAN (FACTUS) */}
+      {dianModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 max-h-[92vh] overflow-y-auto">
+            <div className="flex justify-between items-center pb-4 border-b border-slate-100 mb-5">
+              <div className="flex items-center space-x-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center font-bold">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-black text-slate-900 text-base">Facturación Electrónica DIAN</h3>
+                  <p className="text-xs text-slate-500 font-medium">Proveedor de API Mayorista: Factus Colombia</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setDianModalOpen(false)}
+                className="text-slate-400 hover:text-slate-700 p-1.5 rounded-xl hover:bg-slate-100 transition cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveDianConfig} className="space-y-4 text-xs">
+              {/* Entorno */}
+              <div>
+                <label className="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">
+                  Ambiente de Operación DIAN
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setDianConfig({ ...dianConfig, is_sandbox: true })}
+                    className={`py-2 px-3 rounded-xl border font-bold text-center cursor-pointer transition ${
+                      dianConfig.is_sandbox
+                        ? 'border-blue-600 bg-blue-50/70 text-blue-800 ring-2 ring-blue-600/20'
+                        : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    🛠️ Modo Pruebas (Sandbox)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDianConfig({ ...dianConfig, is_sandbox: false })}
+                    className={`py-2 px-3 rounded-xl border font-bold text-center cursor-pointer transition ${
+                      !dianConfig.is_sandbox
+                        ? 'border-emerald-600 bg-emerald-50/70 text-emerald-800 ring-2 ring-emerald-600/20'
+                        : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    🏛️ Producción Oficial DIAN
+                  </button>
+                </div>
+              </div>
+
+              {/* Razón social & NIT */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">NIT Emisor</label>
+                  <input
+                    type="text"
+                    value={dianConfig.company_nit || ''}
+                    onChange={(e) => setDianConfig({ ...dianConfig, company_nit: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono font-bold focus:bg-white focus:ring-1 focus:ring-blue-600"
+                    placeholder="901.458.921-3"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Razón Social</label>
+                  <input
+                    type="text"
+                    value={dianConfig.company_name || ''}
+                    onChange={(e) => setDianConfig({ ...dianConfig, company_name: e.target.value })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-bold focus:bg-white focus:ring-1 focus:ring-blue-600"
+                    placeholder="Grupo Soluciones Colombia"
+                  />
+                </div>
+              </div>
+
+              {/* Credenciales de Factus */}
+              <div className="pt-2 border-t border-slate-100">
+                <span className="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-2">
+                  Credenciales de API (Factus)
+                </span>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block font-semibold text-slate-600 mb-1">Client ID</label>
+                    <input
+                      type="text"
+                      value={dianConfig.client_id || ''}
+                      onChange={(e) => setDianConfig({ ...dianConfig, client_id: e.target.value })}
+                      placeholder="Pega aquí el Client ID de Factus"
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs focus:bg-white focus:ring-1 focus:ring-blue-600"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-slate-600 mb-1">Client Secret</label>
+                    <input
+                      type="password"
+                      value={dianConfig.client_secret || ''}
+                      onChange={(e) => setDianConfig({ ...dianConfig, client_secret: e.target.value })}
+                      placeholder="••••••••••••••••••••••••"
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs focus:bg-white focus:ring-1 focus:ring-blue-600"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-slate-600 mb-1">Token de Acceso Permanente (Opcional)</label>
+                    <textarea
+                      rows="2"
+                      value={dianConfig.token || ''}
+                      onChange={(e) => setDianConfig({ ...dianConfig, token: e.target.value })}
+                      placeholder="Bearer Token de Factus (si fue generado manualmente)"
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-[11px] focus:bg-white focus:ring-1 focus:ring-blue-600"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+
+              {/* Resultado de prueba */}
+              {dianTestResult && (
+                <div
+                  className={`p-3 rounded-xl border text-xs font-medium flex items-start space-x-2 ${
+                    dianTestResult.success
+                      ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+                      : 'bg-rose-50 border-rose-200 text-rose-800'
+                  }`}
+                >
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-bold">{dianTestResult.success ? 'Conexión Exitosa' : 'Aviso de Conexión'}</p>
+                    <p className="mt-0.5 text-[11px]">{dianTestResult.message}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Botones de Acción */}
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-2 pt-4 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={handleTestDianConnection}
+                  disabled={testingDian}
+                  className="w-full sm:w-auto px-4 py-2 border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 font-bold flex items-center justify-center space-x-1.5 transition cursor-pointer"
+                >
+                  {testingDian && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
+                  <span>{testingDian ? 'Verificando...' : 'Probar Conexión'}</span>
+                </button>
+
+                <div className="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setDianModalOpen(false)}
+                    className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold cursor-pointer"
+                  >
+                    Cerrar
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold cursor-pointer shadow-md shadow-blue-700/20 transition active:scale-95"
+                  >
+                    Guardar Configuración
+                  </button>
+                </div>
               </div>
             </form>
           </div>

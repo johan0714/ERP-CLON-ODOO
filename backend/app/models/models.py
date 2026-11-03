@@ -189,6 +189,7 @@ class AccountMove(Base):
     sale_order = relationship("SaleOrder", back_populates="invoices")
     invoice_lines = relationship("AccountMoveLine", back_populates="move", cascade="all, delete-orphan")
     payments = relationship("AccountPayment", back_populates="move", cascade="all, delete-orphan")
+    dian_stamp = relationship("DianInvoiceStamp", back_populates="move", uselist=False, cascade="all, delete-orphan")
 
 
 class AccountMoveLine(Base):
@@ -222,3 +223,34 @@ class AccountPayment(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     move = relationship("AccountMove", back_populates="payments")
+
+
+class DianInvoiceStamp(Base):
+    __tablename__ = "dian_invoice_stamp"
+
+    id = Column(Integer, primary_key=True, index=True)
+    move_id = Column(Integer, ForeignKey("account_move.id"), unique=True, index=True, nullable=False)
+    status = Column(String(32), default="accepted")  # accepted, pending, rejected
+    cufe = Column(String(128), nullable=True, index=True)
+    dian_number = Column(String(64), nullable=True)
+    qr_data = Column(Text, nullable=True)
+    pdf_url = Column(String(500), nullable=True)
+    xml_url = Column(String(500), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    move = relationship("AccountMove", back_populates="dian_stamp")
+
+
+class DianConfig(Base):
+    __tablename__ = "dian_config"
+
+    id = Column(Integer, primary_key=True, index=True)
+    provider = Column(String(32), default="factus")  # factus, thefactory
+    is_sandbox = Column(Boolean, default=True)
+    client_id = Column(String(255), nullable=True)
+    client_secret = Column(String(255), nullable=True)
+    token = Column(Text, nullable=True)
+    company_nit = Column(String(32), default="901234567")
+    company_name = Column(String(255), default="Grupo Soluciones Colombia")
+    updated_at = Column(DateTime, default=datetime.utcnow)
+
