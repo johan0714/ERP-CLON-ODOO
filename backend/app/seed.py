@@ -12,10 +12,10 @@ def run_seed():
     admin_u = db.query(ResUser).filter(ResUser.email == "admin@empresa.com").first()
     if admin_u:
         admin_u.city = "Bucaramanga (Sede Principal)"
-        admin_u.name = "Pedro Albarracín (Admin)"
+        admin_u.name = "Jeisson Orlando Paternina"
     else:
         admin_u = ResUser(
-            name="Pedro Albarracín (Admin)",
+            name="Jeisson Orlando Paternina",
             email="admin@empresa.com",
             hashed_password=hash_password("admin123"),
             role="admin",
@@ -27,10 +27,10 @@ def run_seed():
     emp_u = db.query(ResUser).filter(ResUser.email == "empleado@empresa.com").first()
     if emp_u:
         emp_u.city = "El Centro, Barrancabermeja"
-        emp_u.name = "Operaciones & Almacén"
+        emp_u.name = "Santiago Galvis"
     else:
         emp_u = ResUser(
-            name="Operaciones & Almacén",
+            name="Santiago Galvis",
             email="empleado@empresa.com",
             hashed_password=hash_password("empleado123"),
             role="employee",
@@ -43,8 +43,8 @@ def run_seed():
     # 1. Configurar Secuencias
     sequences = [
         {"code": "sale.order", "name": "Ventas", "prefix": "SO-", "padding": 4, "next_number": 1001},
-        {"code": "stock.picking.out", "name": "Entregas", "prefix": "WH/OUT/", "padding": 4, "next_number": 101},
-        {"code": "stock.picking.in", "name": "Recepciones", "prefix": "WH/IN/", "padding": 4, "next_number": 101},
+        {"code": "stock.picking.out", "name": "Remisiones de Entrega", "prefix": "REM/OUT/", "padding": 4, "next_number": 101},
+        {"code": "stock.picking.in", "name": "Remisiones de Entrada", "prefix": "REM/IN/", "padding": 4, "next_number": 101},
         {"code": "account.move.out", "name": "Facturas Cliente", "prefix": "INV-2026-", "padding": 4, "next_number": 501},
         {"code": "account.payment", "name": "Pagos", "prefix": "PAY-", "padding": 4, "next_number": 201},
     ]

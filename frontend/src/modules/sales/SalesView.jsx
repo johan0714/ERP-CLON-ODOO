@@ -468,7 +468,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                   <Truck className="w-4 h-4 text-amber-600" />
                   <div className="text-left">
                     <div className="text-[10px] text-slate-400 uppercase">Entrega</div>
-                    <div>{selectedOrder.pickings_count} Albarán(es)</div>
+                    <div>{selectedOrder.pickings_count} Remisión(es)</div>
                   </div>
                 </button>
               )}

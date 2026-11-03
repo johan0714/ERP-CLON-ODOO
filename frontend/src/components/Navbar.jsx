@@ -26,7 +26,7 @@ export default function Navbar({
         ];
       case 'inventory':
         return [
-          { id: 'pickings', label: 'Albaranes de Entrega' },
+          { id: 'pickings', label: 'Remisiones de Entrega' },
           { id: 'products', label: 'Stock de Productos' },
         ];
       case 'invoicing':
@@ -215,7 +215,7 @@ export default function Navbar({
             </div>
 
             <p className="text-xs text-slate-500 mb-4">
-              Selecciona tu sede actual para que las órdenes, albaranes y facturas registren tu punto de operación:
+              Selecciona tu sede actual para que las órdenes, remisiones y facturas registren tu punto de operación:
             </p>
 
             {/* Opciones Rápidas Santander */}

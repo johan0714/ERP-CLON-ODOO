@@ -30,7 +30,7 @@ export default function AppLauncher({ isOpen, onClose, onSelectApp }) {
     {
       id: 'inventory',
       name: 'Inventario',
-      description: 'Stock, productos y albaranes',
+      description: 'Stock, productos y remisiones',
       icon: Boxes,
       color: 'bg-amber-600',
     },

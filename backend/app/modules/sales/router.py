@@ -105,7 +105,7 @@ def create_sales_order(order_in: SaleOrderCreate, db: Session = Depends(get_db))
 
 @router.post("/{order_id}/confirm", response_model=SaleOrderOut)
 def confirm_sales_order(order_id: int, db: Session = Depends(get_db)):
-    """Confirma el presupuesto, convirtiéndolo en Pedido de Venta y generando el Albarán de Entrega."""
+    """Confirma el presupuesto, convirtiéndolo en Pedido de Venta y generando la Remisión de Entrega."""
     order = db.query(SaleOrder).filter(SaleOrder.id == order_id).first()
     if not order:
         raise HTTPException(status_code=404, detail="Pedido no encontrado")
@@ -115,7 +115,7 @@ def confirm_sales_order(order_id: int, db: Session = Depends(get_db)):
     order.state = "sale"
     order.invoice_status = "to_invoice"
 
-    # Generar Albarán de Entrega (Stock Picking) para productos almacenables
+    # Generar Remisión de Entrega (Stock Picking) para productos almacenables
     storable_lines = [l for l in order.order_lines if l.product and l.product.type == "product"]
     if storable_lines:
         picking_name = IrSequence.get_next(db, "stock.picking.out")

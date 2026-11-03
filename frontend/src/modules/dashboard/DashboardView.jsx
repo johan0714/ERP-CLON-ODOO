@@ -95,9 +95,9 @@ export default function DashboardView({ onNavigateApp, onNewOrder, onNewContact,
       subView: 'invoices'
     },
     {
-      title: 'Albaranes por Entregar',
+      title: 'Remisiones por Entregar',
       value: metrics.pending_deliveries,
-      subtext: metrics.pending_deliveries > 0 ? 'Envíos en espera de almacén' : 'Todo despachado al día',
+      subtext: metrics.pending_deliveries > 0 ? 'Remisiones en espera de despacho' : 'Todo despachado al día',
       icon: Truck,
       iconBg: metrics.pending_deliveries > 0 ? 'bg-amber-600 text-white' : 'bg-emerald-600 text-white',
       cardBg: 'bg-white',
@@ -335,7 +335,7 @@ export default function DashboardView({ onNavigateApp, onNewOrder, onNewContact,
                 <span className="text-[10px] text-amber-600 font-bold group-hover:underline">Ir &rarr;</span>
               </div>
               <p className="text-[11px] text-slate-500 mt-0.5">
-                Revise albaranes de salida en Barrancabermeja y valide entregas para descontar tambores y filtros del stock.
+                Revise remisiones de salida en Barrancabermeja y valide entregas para descontar tambores y filtros del stock.
               </p>
             </div>
 

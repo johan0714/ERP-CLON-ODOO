@@ -159,7 +159,7 @@ export default function InventoryView({ subView = 'products', onHome }) {
         onHome={onHome}
         breadcrumbs={[
           { label: 'Inventario' },
-          { label: currentTab === 'products' ? 'Lubricantes, Filtros & Stock' : 'Albaranes de Despacho' }
+          { label: currentTab === 'products' ? 'Lubricantes, Filtros & Stock' : 'Remisiones de Despacho' }
         ]}
         onNew={currentTab === 'products' ? handleOpenNewProduct : null}
         newButtonLabel="+ Nuevo Producto / Filtro"
@@ -183,7 +183,7 @@ export default function InventoryView({ subView = 'products', onHome }) {
                 currentTab === 'pickings' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Albaranes ({pickings.filter(p => p.state !== 'done').length} pend.)
+              Remisiones ({pickings.filter(p => p.state !== 'done').length} pend.)
             </button>
           </div>
         }
@@ -333,12 +333,12 @@ export default function InventoryView({ subView = 'products', onHome }) {
             </div>
           )
         ) : (
-          /* VISTA ALBARANES / PICKINGS */
+          /* VISTA REMISIONES / PICKINGS */
           <div className="bg-white rounded-2xl border border-slate-200 overflow-x-auto shadow-2xs">
             <table className="w-full min-w-[650px] text-left text-sm">
               <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase font-semibold">
                 <tr>
-                  <th className="py-3 px-4">Albarán</th>
+                  <th className="py-3 px-4">Nº Remisión</th>
                   <th className="py-3 px-4">Contacto / Destinatario</th>
                   <th className="py-3 px-4">Documento Origen</th>
                   <th className="py-3 px-4">Fecha Prevista</th>
@@ -350,7 +350,7 @@ export default function InventoryView({ subView = 'products', onHome }) {
                 {pickings.length === 0 ? (
                   <tr>
                     <td colSpan="6" className="py-8 text-center text-slate-400">
-                      No hay albaranes registrados. Se crearán automáticamente al confirmar pedidos de venta.
+                      No hay remisiones registradas. Se crearán automáticamente al confirmar pedidos de venta.
                     </td>
                   </tr>
                 ) : (
@@ -564,13 +564,13 @@ export default function InventoryView({ subView = 'products', onHome }) {
         </div>
       )}
 
-      {/* Modal Detalle Albarán */}
+      {/* Modal Detalle Remisión */}
       {selectedPicking && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
           <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[92vh] overflow-y-auto p-5 sm:p-6 border border-slate-100">
             <div className="flex items-center justify-between pb-3 border-b mb-4">
               <div>
-                <span className="text-xs uppercase font-bold text-slate-400">Albarán de Salida / Despacho</span>
+                <span className="text-xs uppercase font-bold text-slate-400">Remisión de Salida / Despacho</span>
                 <h3 className="text-xl font-black text-slate-900">{selectedPicking.name}</h3>
               </div>
               <button

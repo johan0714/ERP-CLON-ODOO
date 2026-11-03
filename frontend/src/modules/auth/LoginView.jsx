@@ -152,7 +152,7 @@ export default function LoginView({ onLoginSuccess }) {
                 <ShieldCheck className="w-4 h-4" />
                 <span>Administrador</span>
               </div>
-              <div className="text-[11px] text-slate-800 font-bold truncate">Pedro Albarracín</div>
+              <div className="text-[11px] text-slate-800 font-bold truncate">Jeisson Orlando Paternina</div>
               <div className="text-[10px] text-slate-500 flex items-center space-x-1 mt-0.5">
                 <MapPin className="w-3 h-3 text-blue-600 shrink-0" />
                 <span className="truncate">Bucaramanga</span>
@@ -167,9 +167,9 @@ export default function LoginView({ onLoginSuccess }) {
             >
               <div className="flex items-center space-x-1.5 text-xs font-bold text-emerald-700 mb-1">
                 <UserCheck className="w-4 h-4" />
-                <span>Trabajador</span>
+                <span>Usuario Invitado</span>
               </div>
-              <div className="text-[11px] text-slate-800 font-bold truncate">Operaciones & Almacén</div>
+              <div className="text-[11px] text-slate-800 font-bold truncate">Santiago Galvis</div>
               <div className="text-[10px] text-slate-500 flex items-center space-x-1 mt-0.5">
                 <MapPin className="w-3 h-3 text-emerald-600 shrink-0" />
                 <span className="truncate">El Centro, B/bermeja</span>

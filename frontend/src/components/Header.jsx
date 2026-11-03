@@ -41,7 +41,7 @@ export default function Header({
   const subViewNames = {
     main: 'Resumen Ejecutivo',
     orders: 'Pedidos de Venta',
-    pickings: 'Albaranes de Despacho',
+    pickings: 'Remisiones de Despacho',
     products: 'Catálogo de Lubricantes & Filtros',
     invoices: 'Facturas de Cliente',
     customers: 'Clientes',

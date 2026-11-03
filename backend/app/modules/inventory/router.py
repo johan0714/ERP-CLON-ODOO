@@ -75,7 +75,7 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
     return {"ok": True, "message": "Producto eliminado del inventario", "id": product_id}
 
 
-# --- ALBARANES / PICKINGS (ENTREGAS Y RECEPCIONES) ---
+# --- REMISIONES / PICKINGS (ENTREGAS Y RECEPCIONES) ---
 @router.get("/pickings", response_model=List[StockPickingOut])
 def list_pickings(
     picking_type: Optional[str] = Query(None),
@@ -97,7 +97,7 @@ def list_pickings(
 def get_picking(picking_id: int, db: Session = Depends(get_db)):
     picking = db.query(StockPicking).filter(StockPicking.id == picking_id).first()
     if not picking:
-        raise HTTPException(status_code=404, detail="Albarán no encontrado")
+        raise HTTPException(status_code=404, detail="Remisión no encontrada")
     return picking
 
 
@@ -106,9 +106,9 @@ def validate_picking(picking_id: int, db: Session = Depends(get_db)):
     """Valida la entrega o recepción, descontando o sumando stock de los productos."""
     picking = db.query(StockPicking).filter(StockPicking.id == picking_id).first()
     if not picking:
-        raise HTTPException(status_code=404, detail="Albarán no encontrado")
+        raise HTTPException(status_code=404, detail="Remisión no encontrada")
     if picking.state == "done":
-        raise HTTPException(status_code=400, detail="El albarán ya ha sido validado")
+        raise HTTPException(status_code=400, detail="La remisión ya ha sido validada")
 
     for move in picking.move_lines:
         move.quantity_done = move.product_uom_qty

@@ -53,7 +53,7 @@ export default function Sidebar({
         {
           id: 'inventory',
           subView: 'pickings',
-          label: 'Albaranes & Despachos',
+          label: 'Remisiones & Despachos',
           icon: Truck,
           badge: null
         },
