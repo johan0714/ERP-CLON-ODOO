@@ -75,18 +75,30 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
     }
   };
 
+  const calculateMargin = (cost, price) => {
+    if (!cost || cost <= 0) return 0;
+    return Math.round(((price - cost) / cost) * 100 * 10) / 10;
+  };
+
   const handleStartNew = () => {
     setSelectedOrder(null);
     setIsCreating(true);
+    const defaultProd = products[0];
+    const cost = defaultProd ? (defaultProd.standard_price || 0) : 0;
+    const price = defaultProd ? (defaultProd.list_price || 0) : 0;
+    const margin = calculateMargin(cost, price);
+
     setNewOrderData({
       partner_id: partners.length > 0 ? partners[0].id : '',
       note: 'Condiciones de pago: 30 días. Despacho y entrega de lubricantes/filtros en sede Bucaramanga o El Centro, Barrancabermeja.',
       lines: [
         {
-          product_id: products.length > 0 ? products[0].id : '',
-          name: products.length > 0 ? products[0].name : '',
+          product_id: defaultProd ? defaultProd.id : '',
+          name: defaultProd ? defaultProd.name : '',
+          cost_price: cost,
+          margin_percent: margin,
           product_uom_qty: 1,
-          price_unit: products.length > 0 ? products[0].list_price : 0,
+          price_unit: price,
           tax_percent: 19,
         },
       ],
@@ -95,6 +107,10 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
 
   const handleAddLine = () => {
     const defaultProd = products[0];
+    const cost = defaultProd ? (defaultProd.standard_price || 0) : 0;
+    const price = defaultProd ? (defaultProd.list_price || 0) : 0;
+    const margin = calculateMargin(cost, price);
+
     setNewOrderData({
       ...newOrderData,
       lines: [
@@ -102,8 +118,10 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
         {
           product_id: defaultProd ? defaultProd.id : '',
           name: defaultProd ? defaultProd.name : '',
+          cost_price: cost,
+          margin_percent: margin,
           product_uom_qty: 1,
-          price_unit: defaultProd ? defaultProd.list_price : 0,
+          price_unit: price,
           tax_percent: 19,
         },
       ],
@@ -119,10 +137,16 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
   const handleLineProductChange = (idx, prodId) => {
     const prod = products.find((p) => p.id === parseInt(prodId));
     if (!prod) return;
+    const cost = prod.standard_price || 0;
+    const price = prod.list_price || 0;
+    const margin = calculateMargin(cost, price);
+
     const updated = [...newOrderData.lines];
     updated[idx].product_id = prod.id;
     updated[idx].name = prod.name;
-    updated[idx].price_unit = prod.list_price;
+    updated[idx].cost_price = cost;
+    updated[idx].margin_percent = margin;
+    updated[idx].price_unit = price;
     setNewOrderData({ ...newOrderData, lines: updated });
   };
 
@@ -132,9 +156,41 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
     setNewOrderData({ ...newOrderData, lines: updated });
   };
 
-  const handleLinePriceChange = (idx, price) => {
+  // Modificar Costo de Adquisición
+  const handleLineCostChange = (idx, costVal) => {
+    const cost = parseFloat(costVal) || 0;
     const updated = [...newOrderData.lines];
-    updated[idx].price_unit = parseFloat(price) || 0;
+    updated[idx].cost_price = cost;
+    const margin = parseFloat(updated[idx].margin_percent) || 0;
+    if (cost > 0 && margin !== 0) {
+      updated[idx].price_unit = Math.round(cost * (1 + margin / 100));
+    } else if (cost > 0 && updated[idx].price_unit > 0) {
+      updated[idx].margin_percent = calculateMargin(cost, updated[idx].price_unit);
+    }
+    setNewOrderData({ ...newOrderData, lines: updated });
+  };
+
+  // Opción 1: Fijar precio dado por Porcentaje de Ganancia sobre el Costo de Adquisición
+  const handleLineMarginChange = (idx, marginVal) => {
+    const margin = parseFloat(marginVal) || 0;
+    const updated = [...newOrderData.lines];
+    updated[idx].margin_percent = margin;
+    const cost = parseFloat(updated[idx].cost_price) || 0;
+    if (cost > 0) {
+      updated[idx].price_unit = Math.round(cost * (1 + margin / 100));
+    }
+    setNewOrderData({ ...newOrderData, lines: updated });
+  };
+
+  // Opción 2: Fijar precio a conveniencia escrito a mano
+  const handleLinePriceChange = (idx, priceVal) => {
+    const price = parseFloat(priceVal) || 0;
+    const updated = [...newOrderData.lines];
+    updated[idx].price_unit = price;
+    const cost = parseFloat(updated[idx].cost_price) || 0;
+    if (cost > 0) {
+      updated[idx].margin_percent = calculateMargin(cost, price);
+    }
     setNewOrderData({ ...newOrderData, lines: updated });
   };
 
@@ -147,16 +203,26 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
   const calculateNewOrderTotals = () => {
     let untaxed = 0;
     let tax = 0;
+    let totalCost = 0;
     newOrderData.lines.forEach((l) => {
-      const sub = (parseFloat(l.product_uom_qty) || 0) * (parseFloat(l.price_unit) || 0);
+      const qty = parseFloat(l.product_uom_qty) || 0;
+      const price = parseFloat(l.price_unit) || 0;
+      const cost = parseFloat(l.cost_price) || 0;
+      const sub = qty * price;
       untaxed += sub;
+      totalCost += qty * cost;
       const rate = l.tax_percent !== undefined && l.tax_percent !== null ? parseFloat(l.tax_percent) : 19;
       tax += sub * (rate / 100);
     });
+    const profit = untaxed - totalCost;
+    const profitMargin = totalCost > 0 ? Math.round((profit / totalCost) * 100 * 10) / 10 : 0;
     return {
       untaxed: round(untaxed),
       tax: round(tax),
       total: round(untaxed + tax),
+      totalCost: round(totalCost),
+      profit: round(profit),
+      profitMargin,
     };
   };
 
@@ -308,13 +374,21 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                 </div>
 
                 <div className="border border-slate-200 rounded-xl overflow-x-auto shadow-2xs">
-                  <table className="w-full min-w-[580px] text-left text-xs">
+                  <table className="w-full min-w-[760px] text-left text-xs">
                     <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase">
                       <tr>
-                        <th className="py-2.5 px-3">Producto</th>
-                        <th className="py-2.5 px-3 w-24 text-right">Cantidad</th>
-                        <th className="py-2.5 px-3 w-28 text-right">Precio Unitario</th>
-                        <th className="py-2.5 px-3 w-32 text-right">IVA</th>
+                        <th className="py-2.5 px-3">Producto / Referencia</th>
+                        <th className="py-2.5 px-2 w-20 text-right">Cant.</th>
+                        <th className="py-2.5 px-2 w-28 text-right" title="Costo de compra o adquisición">
+                          Costo Adq.
+                        </th>
+                        <th className="py-2.5 px-2 w-28 text-right" title="Opción 1: Porcentaje de ganancia sobre el costo">
+                          % Ganancia
+                        </th>
+                        <th className="py-2.5 px-2 w-32 text-right" title="Opción 2: Precio de venta unitario (a conveniencia / escrito a mano)">
+                          Precio Venta
+                        </th>
+                        <th className="py-2.5 px-2 w-28 text-right">IVA</th>
                         <th className="py-2.5 px-3 w-28 text-right">Subtotal</th>
                         <th className="py-2.5 px-2 w-10"></th>
                       </tr>
@@ -322,60 +396,114 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                     <tbody className="divide-y divide-slate-100">
                       {newOrderData.lines.map((line, idx) => {
                         const lineSub = (line.product_uom_qty || 0) * (line.price_unit || 0);
+                        const marginVal = line.margin_percent !== undefined ? line.margin_percent : 0;
+                        const isMarginPositive = marginVal >= 0;
                         return (
                           <tr key={idx} className="hover:bg-slate-50">
+                            {/* Producto */}
                             <td className="py-2 px-3">
                               <select
                                 value={line.product_id}
                                 onChange={(e) => handleLineProductChange(idx, e.target.value)}
-                                className="w-full py-1 px-2 border border-slate-300 rounded text-xs bg-white focus:ring-1 focus:ring-blue-600"
+                                className="w-full py-1.5 px-2 border border-slate-300 rounded-lg text-xs bg-white focus:ring-1 focus:ring-blue-600 font-medium"
                               >
                                 {products.map((p) => (
                                   <option key={p.id} value={p.id}>
-                                    {p.name} ({formatCOP(p.list_price)})
+                                    {p.name}
                                   </option>
                                 ))}
                               </select>
                             </td>
-                            <td className="py-2 px-3">
+
+                            {/* Cantidad */}
+                            <td className="py-2 px-2">
                               <input
                                 type="number"
                                 min="0.1"
                                 step="any"
                                 value={line.product_uom_qty}
                                 onChange={(e) => handleLineQtyChange(idx, e.target.value)}
-                                className="w-full text-right py-1 px-2 border border-slate-300 rounded text-xs"
+                                className="w-full text-right py-1.5 px-2 border border-slate-300 rounded-lg text-xs font-semibold focus:ring-1 focus:ring-blue-600"
                               />
                             </td>
-                            <td className="py-2 px-3">
-                              <input
-                                type="number"
-                                step="1"
-                                value={line.price_unit}
-                                onChange={(e) => handleLinePriceChange(idx, e.target.value)}
-                                className="w-full text-right py-1 px-2 border border-slate-300 rounded text-xs"
-                              />
+
+                            {/* Costo de Adquisición */}
+                            <td className="py-2 px-2">
+                              <div className="relative">
+                                <span className="absolute left-2 top-1.5 text-slate-400 text-xs">$</span>
+                                <input
+                                  type="number"
+                                  step="1"
+                                  value={line.cost_price || 0}
+                                  onChange={(e) => handleLineCostChange(idx, e.target.value)}
+                                  className="w-full text-right py-1.5 pr-2 pl-4 border border-slate-300 rounded-lg text-xs text-slate-700 bg-slate-50/50 focus:bg-white focus:ring-1 focus:ring-blue-600"
+                                  title="Costo de adquisición base"
+                                />
+                              </div>
                             </td>
-                            <td className="py-2 px-3">
+
+                            {/* Opción 1: Porcentaje de Ganancia sobre Costo */}
+                            <td className="py-2 px-2">
+                              <div className="relative">
+                                <input
+                                  type="number"
+                                  step="0.5"
+                                  value={line.margin_percent !== undefined ? line.margin_percent : 0}
+                                  onChange={(e) => handleLineMarginChange(idx, e.target.value)}
+                                  className={`w-full text-right py-1.5 pr-5 pl-2 border rounded-lg text-xs font-bold focus:ring-1 focus:ring-blue-600 ${
+                                    isMarginPositive
+                                      ? 'border-emerald-300 bg-emerald-50/40 text-emerald-800'
+                                      : 'border-rose-300 bg-rose-50/40 text-rose-800'
+                                  }`}
+                                  title="Porcentaje de ganancia sobre costo (calcula el precio automáticamente)"
+                                />
+                                <span className="absolute right-2 top-1.5 text-xs font-bold text-slate-400 pointer-events-none">
+                                  %
+                                </span>
+                              </div>
+                            </td>
+
+                            {/* Opción 2: Precio de Venta a Conveniencia (Escrito a mano) */}
+                            <td className="py-2 px-2">
+                              <div className="relative">
+                                <span className="absolute left-2 top-1.5 text-blue-600 text-xs font-bold">$</span>
+                                <input
+                                  type="number"
+                                  step="1"
+                                  value={line.price_unit}
+                                  onChange={(e) => handleLinePriceChange(idx, e.target.value)}
+                                  className="w-full text-right py-1.5 pr-2 pl-4 border border-blue-300 rounded-lg text-xs font-black text-blue-900 bg-blue-50/30 focus:bg-white focus:ring-2 focus:ring-blue-600"
+                                  title="Precio de venta unitario escrito a mano a conveniencia"
+                                />
+                              </div>
+                            </td>
+
+                            {/* Selector de IVA */}
+                            <td className="py-2 px-2">
                               <select
                                 value={line.tax_percent !== undefined ? line.tax_percent : 19}
                                 onChange={(e) => handleLineTaxChange(idx, e.target.value)}
-                                className="w-full py-1 px-2 border border-slate-300 rounded text-xs bg-white text-right font-medium focus:ring-1 focus:ring-blue-600 cursor-pointer"
+                                className="w-full py-1.5 px-1.5 border border-slate-300 rounded-lg text-xs bg-white text-right font-medium focus:ring-1 focus:ring-blue-600 cursor-pointer"
                               >
                                 <option value="19">19% (General)</option>
                                 <option value="5">5% (Reducido)</option>
                                 <option value="0">0% (Exento)</option>
                               </select>
                             </td>
+
+                            {/* Subtotal */}
                             <td className="py-2 px-3 text-right font-bold text-slate-900">
                               {formatCOP(lineSub)}
                             </td>
+
+                            {/* Eliminar línea */}
                             <td className="py-2 px-2 text-center">
                               {newOrderData.lines.length > 1 && (
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveLine(idx)}
                                   className="text-slate-400 hover:text-red-500 p-1 cursor-pointer"
+                                  title="Quitar línea"
                                 >
                                   <Trash2 className="w-3.5 h-3.5" />
                                 </button>
@@ -388,20 +516,39 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                   </table>
                 </div>
 
-                {/* Totales */}
-                <div className="flex justify-end mt-4">
-                  <div className="w-64 space-y-1.5 text-xs">
-                    <div className="flex justify-between text-slate-600">
-                      <span>Base Imponible:</span>
-                      <span className="font-semibold">{formatCOP(calculateNewOrderTotals().untaxed)}</span>
+                {/* Resumen de Rentabilidad y Totales */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 pt-3 border-t border-slate-100">
+                  <div className="bg-slate-50/80 rounded-xl p-3 border border-slate-200 text-xs flex flex-col justify-center space-y-1.5">
+                    <div className="font-bold text-slate-700 flex items-center justify-between">
+                      <span className="text-slate-500 uppercase text-[10px] tracking-wider">Margen Estimado de Operación</span>
+                      <span className="px-2 py-0.5 rounded-md text-[11px] font-extrabold bg-blue-100 text-blue-800 border border-blue-200">
+                        {calculateNewOrderTotals().profitMargin >= 0 ? `+${calculateNewOrderTotals().profitMargin}% Margen Promedio` : `${calculateNewOrderTotals().profitMargin}%`}
+                      </span>
                     </div>
                     <div className="flex justify-between text-slate-600">
-                      <span>IVA / Impuestos:</span>
-                      <span className="font-semibold">{formatCOP(calculateNewOrderTotals().tax)}</span>
+                      <span>Costo de Adquisición Total:</span>
+                      <span className="font-semibold">{formatCOP(calculateNewOrderTotals().totalCost)}</span>
                     </div>
-                    <div className="flex justify-between text-sm font-black text-slate-900 pt-2 border-t border-slate-200">
-                      <span>Total:</span>
-                      <span className="text-blue-700">{formatCOP(calculateNewOrderTotals().total)}</span>
+                    <div className="flex justify-between text-emerald-700 font-bold">
+                      <span>Ganancia Bruta Estimada:</span>
+                      <span>+{formatCOP(calculateNewOrderTotals().profit)}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <div className="w-72 space-y-1.5 text-xs">
+                      <div className="flex justify-between text-slate-600">
+                        <span>Base Imponible:</span>
+                        <span className="font-semibold">{formatCOP(calculateNewOrderTotals().untaxed)}</span>
+                      </div>
+                      <div className="flex justify-between text-slate-600">
+                        <span>IVA / Impuestos:</span>
+                        <span className="font-semibold">{formatCOP(calculateNewOrderTotals().tax)}</span>
+                      </div>
+                      <div className="flex justify-between text-base font-black text-slate-900 pt-2 border-t border-slate-200">
+                        <span>Total Presupuesto:</span>
+                        <span className="text-blue-700">{formatCOP(calculateNewOrderTotals().total)}</span>
+                      </div>
                     </div>
                   </div>
                 </div>

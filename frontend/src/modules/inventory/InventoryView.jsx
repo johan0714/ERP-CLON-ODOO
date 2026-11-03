@@ -466,7 +466,44 @@ export default function InventoryView({ subView = 'products', onHome }) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-600 mb-1">
+                    Costo Adquisición (COP $)
+                  </label>
+                  <input
+                    type="number"
+                    step="1"
+                    value={productForm.standard_price}
+                    onChange={(e) => {
+                      const cost = parseFloat(e.target.value) || 0;
+                      const currentMargin = productForm.margin_percent !== undefined ? productForm.margin_percent : (cost > 0 && productForm.list_price > 0 ? Math.round(((productForm.list_price - cost) / cost) * 100 * 10) / 10 : 0);
+                      const newPrice = cost > 0 && currentMargin > 0 ? Math.round(cost * (1 + currentMargin / 100)) : productForm.list_price;
+                      setProductForm({ ...productForm, standard_price: cost, list_price: newPrice, margin_percent: currentMargin });
+                    }}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs font-medium text-slate-700"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold uppercase text-slate-600 mb-1">
+                    % Margen Ganancia
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      step="0.5"
+                      value={productForm.margin_percent !== undefined ? productForm.margin_percent : (productForm.standard_price > 0 && productForm.list_price > 0 ? Math.round(((productForm.list_price - productForm.standard_price) / productForm.standard_price) * 100 * 10) / 10 : 0)}
+                      onChange={(e) => {
+                        const margin = parseFloat(e.target.value) || 0;
+                        const cost = parseFloat(productForm.standard_price) || 0;
+                        const newPrice = cost > 0 ? Math.round(cost * (1 + margin / 100)) : productForm.list_price;
+                        setProductForm({ ...productForm, margin_percent: margin, list_price: newPrice });
+                      }}
+                      className="w-full px-3 py-2 pr-6 bg-emerald-50/40 border border-emerald-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-emerald-600/20 focus:border-emerald-600 text-xs font-bold text-emerald-800"
+                    />
+                    <span className="absolute right-2.5 top-2 text-xs font-bold text-slate-400 pointer-events-none">%</span>
+                  </div>
+                </div>
                 <div>
                   <label className="block text-xs font-bold uppercase text-slate-600 mb-1">
                     Precio Venta (COP $) *
@@ -476,20 +513,13 @@ export default function InventoryView({ subView = 'products', onHome }) {
                     step="1"
                     required
                     value={productForm.list_price}
-                    onChange={(e) => setProductForm({ ...productForm, list_price: parseFloat(e.target.value) || 0 })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs font-bold text-slate-900"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold uppercase text-slate-600 mb-1">
-                    Coste Adquisición (COP $)
-                  </label>
-                  <input
-                    type="number"
-                    step="1"
-                    value={productForm.standard_price}
-                    onChange={(e) => setProductForm({ ...productForm, standard_price: parseFloat(e.target.value) || 0 })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs font-medium text-slate-700"
+                    onChange={(e) => {
+                      const price = parseFloat(e.target.value) || 0;
+                      const cost = parseFloat(productForm.standard_price) || 0;
+                      const margin = cost > 0 ? Math.round(((price - cost) / cost) * 100 * 10) / 10 : 0;
+                      setProductForm({ ...productForm, list_price: price, margin_percent: margin });
+                    }}
+                    className="w-full px-3 py-2 bg-blue-50/30 border border-blue-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs font-black text-blue-900"
                   />
                 </div>
               </div>
