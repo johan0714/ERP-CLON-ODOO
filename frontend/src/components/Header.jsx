@@ -145,7 +145,7 @@ export default function Header({
 
           {/* Currency indicator */}
           <div className="hidden sm:flex items-center px-2 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] font-bold">
-            COP ($) • IVA 19%
+            COP ($) • IVA 19% / 0%
           </div>
 
           {/* Notifications Bell */}

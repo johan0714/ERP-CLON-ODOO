@@ -138,13 +138,20 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
     setNewOrderData({ ...newOrderData, lines: updated });
   };
 
+  const handleLineTaxChange = (idx, tax) => {
+    const updated = [...newOrderData.lines];
+    updated[idx].tax_percent = parseFloat(tax);
+    setNewOrderData({ ...newOrderData, lines: updated });
+  };
+
   const calculateNewOrderTotals = () => {
     let untaxed = 0;
     let tax = 0;
     newOrderData.lines.forEach((l) => {
-      const sub = (l.product_uom_qty || 0) * (l.price_unit || 0);
+      const sub = (parseFloat(l.product_uom_qty) || 0) * (parseFloat(l.price_unit) || 0);
       untaxed += sub;
-      tax += sub * ((l.tax_percent || 21) / 100);
+      const rate = l.tax_percent !== undefined && l.tax_percent !== null ? parseFloat(l.tax_percent) : 19;
+      tax += sub * (rate / 100);
     });
     return {
       untaxed: round(untaxed),
@@ -307,7 +314,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                         <th className="py-2.5 px-3">Producto</th>
                         <th className="py-2.5 px-3 w-24 text-right">Cantidad</th>
                         <th className="py-2.5 px-3 w-28 text-right">Precio Unitario</th>
-                        <th className="py-2.5 px-3 w-20 text-right">IVA (%)</th>
+                        <th className="py-2.5 px-3 w-32 text-right">IVA</th>
                         <th className="py-2.5 px-3 w-28 text-right">Subtotal</th>
                         <th className="py-2.5 px-2 w-10"></th>
                       </tr>
@@ -349,8 +356,16 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                                 className="w-full text-right py-1 px-2 border border-slate-300 rounded text-xs"
                               />
                             </td>
-                            <td className="py-2 px-3 text-right font-medium text-slate-600">
-                              {line.tax_percent}%
+                            <td className="py-2 px-3">
+                              <select
+                                value={line.tax_percent !== undefined ? line.tax_percent : 19}
+                                onChange={(e) => handleLineTaxChange(idx, e.target.value)}
+                                className="w-full py-1 px-2 border border-slate-300 rounded text-xs bg-white text-right font-medium focus:ring-1 focus:ring-blue-600 cursor-pointer"
+                              >
+                                <option value="19">19% (General)</option>
+                                <option value="5">5% (Reducido)</option>
+                                <option value="0">0% (Exento)</option>
+                              </select>
                             </td>
                             <td className="py-2 px-3 text-right font-bold text-slate-900">
                               {formatCOP(lineSub)}
@@ -381,7 +396,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                       <span className="font-semibold">{formatCOP(calculateNewOrderTotals().untaxed)}</span>
                     </div>
                     <div className="flex justify-between text-slate-600">
-                      <span>IVA (19%):</span>
+                      <span>IVA / Impuestos:</span>
                       <span className="font-semibold">{formatCOP(calculateNewOrderTotals().tax)}</span>
                     </div>
                     <div className="flex justify-between text-sm font-black text-slate-900 pt-2 border-t border-slate-200">
@@ -539,6 +554,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                         <th className="py-2.5 px-3 text-right">Cant. Entregada</th>
                         <th className="py-2.5 px-3 text-right">Cant. Facturada</th>
                         <th className="py-2.5 px-3 text-right">Precio Unitario</th>
+                        <th className="py-2.5 px-3 text-right">IVA</th>
                         <th className="py-2.5 px-3 text-right">Subtotal</th>
                       </tr>
                     </thead>
@@ -550,6 +566,15 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                           <td className="py-2.5 px-3 text-right font-semibold text-amber-700">{l.qty_delivered}</td>
                           <td className="py-2.5 px-3 text-right font-semibold text-emerald-700">{l.qty_invoiced}</td>
                           <td className="py-2.5 px-3 text-right">{formatCOP(l.price_unit)}</td>
+                          <td className="py-2.5 px-3 text-right">
+                            {l.tax_percent === 0 ? (
+                              <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                0% Exento
+                              </span>
+                            ) : (
+                              <span className="font-semibold text-slate-600">{l.tax_percent}%</span>
+                            )}
+                          </td>
                           <td className="py-2.5 px-3 text-right font-bold text-slate-900">
                             {formatCOP(l.price_subtotal)}
                           </td>
@@ -567,7 +592,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                       <span className="font-semibold">{formatCOP(selectedOrder.amount_untaxed)}</span>
                     </div>
                     <div className="flex justify-between text-slate-600">
-                      <span>IVA (19%):</span>
+                      <span>IVA / Impuestos:</span>
                       <span className="font-semibold">{formatCOP(selectedOrder.amount_tax)}</span>
                     </div>
                     <div className="flex justify-between text-base font-black text-slate-900 pt-2 border-t border-slate-200">

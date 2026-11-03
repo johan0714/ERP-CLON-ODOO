@@ -230,7 +230,7 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                         <th className="py-2.5 px-3">Concepto / Producto</th>
                         <th className="py-2.5 px-3 text-right">Cantidad</th>
                         <th className="py-2.5 px-3 text-right">Precio Unitario</th>
-                        <th className="py-2.5 px-3 text-right">IVA (%)</th>
+                        <th className="py-2.5 px-3 text-right">IVA</th>
                         <th className="py-2.5 px-3 text-right">Subtotal</th>
                       </tr>
                     </thead>
@@ -240,7 +240,15 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                           <td className="py-2.5 px-3 font-semibold text-slate-800">{il.name}</td>
                           <td className="py-2.5 px-3 text-right font-bold">{il.quantity}</td>
                           <td className="py-2.5 px-3 text-right">{formatCOP(il.price_unit)}</td>
-                          <td className="py-2.5 px-3 text-right text-slate-500">{il.tax_percent}%</td>
+                          <td className="py-2.5 px-3 text-right">
+                            {il.tax_percent === 0 ? (
+                              <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                0% Exento
+                              </span>
+                            ) : (
+                              <span className="font-semibold text-slate-600">{il.tax_percent}%</span>
+                            )}
+                          </td>
                           <td className="py-2.5 px-3 text-right font-bold text-slate-900">
                             {formatCOP(il.price_subtotal)}
                           </td>
@@ -258,7 +266,7 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                       <span className="font-semibold">{formatCOP(selectedInvoice.amount_untaxed)}</span>
                     </div>
                     <div className="flex justify-between text-slate-600">
-                      <span>IVA (19%):</span>
+                      <span>IVA / Impuestos:</span>
                       <span className="font-semibold">{formatCOP(selectedInvoice.amount_tax)}</span>
                     </div>
                     <div className="flex justify-between text-sm font-black text-slate-900 pt-2 border-t border-slate-200">
