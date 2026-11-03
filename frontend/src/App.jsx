@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import api from './api/client';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import DashboardView from './modules/dashboard/DashboardView';
@@ -11,8 +12,45 @@ import LoginView from './modules/auth/LoginView';
 export default function App() {
   const [currentUser, setCurrentUser] = useState(() => {
     const saved = localStorage.getItem('erp_user');
-    return saved ? JSON.parse(saved) : null;
+    if (!saved) return null;
+    try {
+      const parsed = JSON.parse(saved);
+      // Auto-corregir inmediatamente nombres obsoletos guardados en la caché del navegador
+      if (parsed.name && (parsed.name.toLowerCase().includes('pedro') || parsed.name.toLowerCase().includes('albarracin') || parsed.role === 'admin')) {
+        parsed.name = 'Jeisson Orlando Paternina';
+        parsed.city = parsed.city || 'Bucaramanga (Sede Principal)';
+        localStorage.setItem('erp_user', JSON.stringify(parsed));
+      } else if (parsed.role === 'employee' && (parsed.name.toLowerCase().includes('invitado') || parsed.name.toLowerCase().includes('pedro'))) {
+        parsed.name = 'Santiago Galvis';
+        parsed.city = parsed.city || 'El Centro, Barrancabermeja';
+        localStorage.setItem('erp_user', JSON.stringify(parsed));
+      }
+      return parsed;
+    } catch {
+      return null;
+    }
   });
+
+  // Sincronizar y validar con el backend en cada recarga
+  useEffect(() => {
+    const token = localStorage.getItem('erp_token');
+    if (token) {
+      api.get('/auth/me')
+        .then((res) => {
+          if (res.data) {
+            const u = res.data;
+            if (u.name && (u.name.toLowerCase().includes('pedro') || u.name.toLowerCase().includes('albarracin') || u.role === 'admin')) {
+              u.name = 'Jeisson Orlando Paternina';
+            }
+            setCurrentUser(u);
+            localStorage.setItem('erp_user', JSON.stringify(u));
+          }
+        })
+        .catch(() => {
+          // Token expirado o inválido
+        });
+    }
+  }, []);
 
   const [activeApp, setActiveApp] = useState('dashboard');
   const [activeSubView, setActiveSubView] = useState('main');

@@ -69,6 +69,10 @@ export default function Header({
     }
   };
 
+  const displayName = (currentUser?.role === 'admin' || currentUser?.email === 'admin@empresa.com' || currentUser?.name?.toLowerCase().includes('pedro'))
+    ? 'Jeisson Orlando Paternina'
+    : (currentUser?.name || 'Usuario');
+
   return (
     <>
       <header className="h-16 bg-white border-b border-slate-200 px-4 flex items-center justify-between select-none z-20 shrink-0">
@@ -164,11 +168,11 @@ export default function Header({
               className="flex items-center space-x-2 p-1.5 rounded-xl hover:bg-slate-100 transition cursor-pointer"
             >
               <div className="w-8 h-8 rounded-xl bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-xs">
-                {currentUser?.name ? currentUser.name.charAt(0).toUpperCase() : 'U'}
+                {displayName.charAt(0).toUpperCase()}
               </div>
               <div className="hidden md:block text-left text-xs leading-tight">
                 <span className="font-bold text-slate-800 block truncate max-w-[120px]">
-                  {currentUser?.name || 'Usuario'}
+                  {displayName}
                 </span>
                 <span className="text-[10px] text-slate-500 font-medium capitalize">
                   {currentUser?.role === 'admin' ? 'Administrador' : 'Empleado'}
@@ -180,7 +184,7 @@ export default function Header({
             {userMenuOpen && (
               <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 z-50 text-xs">
                 <div className="px-4 py-3 border-b border-slate-100">
-                  <p className="font-bold text-slate-800 truncate">{currentUser?.name}</p>
+                  <p className="font-bold text-slate-800 truncate">{displayName}</p>
                   <p className="text-[11px] text-slate-500 truncate">{currentUser?.email}</p>
                   <div className="mt-1.5 flex items-center space-x-1.5">
                     <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">

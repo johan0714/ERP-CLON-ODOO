@@ -9,11 +9,24 @@ def run_seed():
     db = SessionLocal()
 
     # 0. Usuarios Santander (Bucaramanga y El Centro, Barrancabermeja)
+    all_users = db.query(ResUser).all()
+    for u in all_users:
+        if u.role == "admin" or u.email == "admin@empresa.com" or "pedro" in u.name.lower() or "albarracin" in u.name.lower():
+            u.name = "Jeisson Orlando Paternina"
+            u.email = "admin@empresa.com"
+            u.role = "admin"
+            u.city = "Bucaramanga (Sede Principal)"
+            u.avatar_color = "bg-blue-700"
+        elif u.role == "employee" or u.email == "empleado@empresa.com":
+            u.name = "Santiago Galvis"
+            u.email = "empleado@empresa.com"
+            u.role = "employee"
+            u.city = "El Centro, Barrancabermeja"
+            u.avatar_color = "bg-emerald-600"
+    db.commit()
+
     admin_u = db.query(ResUser).filter(ResUser.email == "admin@empresa.com").first()
-    if admin_u:
-        admin_u.city = "Bucaramanga (Sede Principal)"
-        admin_u.name = "Jeisson Orlando Paternina"
-    else:
+    if not admin_u:
         admin_u = ResUser(
             name="Jeisson Orlando Paternina",
             email="admin@empresa.com",
@@ -25,10 +38,7 @@ def run_seed():
         db.add(admin_u)
 
     emp_u = db.query(ResUser).filter(ResUser.email == "empleado@empresa.com").first()
-    if emp_u:
-        emp_u.city = "El Centro, Barrancabermeja"
-        emp_u.name = "Santiago Galvis"
-    else:
+    if not emp_u:
         emp_u = ResUser(
             name="Santiago Galvis",
             email="empleado@empresa.com",
