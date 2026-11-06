@@ -1,4 +1,4 @@
-from backend.app.core.database import SessionLocal, engine, Base
+from backend.app.core.database import SessionLocal, engine, Base, apply_migrations
 from backend.app.core.auth import hash_password
 from backend.app.models.models import (
     IrSequence, ResPartner, ProductProduct, SaleOrder, SaleOrderLine, StockPicking, StockMove, ResUser
@@ -6,6 +6,7 @@ from backend.app.models.models import (
 
 def run_seed():
     Base.metadata.create_all(bind=engine)
+    apply_migrations()
     db = SessionLocal()
 
     # 0. Usuarios Santander (Bucaramanga y El Centro, Barrancabermeja)
@@ -311,10 +312,15 @@ def run_seed():
     for line in db.query(SaleOrderLine).all():
         if "Laptop" in line.name:
             line.name = "Aceite Motor 15W-40 CI-4/SL (Tambor 55 Galones)"
+            line.uom_name = "Tambor (55 Gal)"
         elif "Monitor" in line.name:
             line.name = "Filtro de Aceite Lubricante Heavy Duty P552100"
+            line.uom_name = "Unidades"
         elif "Teclado" in line.name:
             line.name = "Filtro Separador Combustible y Trampa de Agua FS19732"
+            line.uom_name = "Unidades"
+        elif not line.uom_name:
+            line.uom_name = line.product.uom_name if line.product else "Balde (5 Gal)"
 
     # 7. Configuración DIAN / Factus
     from backend.app.models.models import DianConfig
