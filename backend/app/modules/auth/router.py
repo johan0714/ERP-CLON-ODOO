@@ -69,12 +69,12 @@ def login(creds: LoginRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=403, detail="Usuario desactivado")
 
     # Asegurar nombre oficial en caso de registros previos
-    if "pedro" in user.name.lower() or "albarracin" in user.name.lower() or user.role == "admin":
-        user.name = "Jeisson Orlando Paternina"
+    if "pedro" in user.name.lower() or "albarracin" in user.name.lower() or "jeisson" in user.name.lower() or user.role == "admin" or user.email == "admin@empresa.com":
+        user.name = "Pedro Ramón Albarracín"
         user.city = user.city or "Bucaramanga (Sede Principal)"
         db.commit()
         db.refresh(user)
-    elif user.role == "employee" and ("invitado" in user.name.lower() or "pedro" in user.name.lower()):
+    elif user.role == "employee" and ("invitado" in user.name.lower() or "demo" in user.name.lower()):
         user.name = "Santiago Galvis"
         user.city = user.city or "El Centro, Barrancabermeja"
         db.commit()
@@ -89,8 +89,8 @@ def login(creds: LoginRequest, db: Session = Depends(get_db)):
 
 @router.get("/me", response_model=UserOut)
 def get_me(current_user: ResUser = Depends(get_current_user), db: Session = Depends(get_db)):
-    if "pedro" in current_user.name.lower() or "albarracin" in current_user.name.lower() or current_user.role == "admin":
-        current_user.name = "Jeisson Orlando Paternina"
+    if "pedro" in current_user.name.lower() or "albarracin" in current_user.name.lower() or "jeisson" in current_user.name.lower() or current_user.role == "admin" or current_user.email == "admin@empresa.com":
+        current_user.name = "Pedro Ramón Albarracín"
         current_user.city = current_user.city or "Bucaramanga (Sede Principal)"
         db.commit()
         db.refresh(current_user)

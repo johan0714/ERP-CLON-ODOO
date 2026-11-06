@@ -69,8 +69,8 @@ export default function Header({
     }
   };
 
-  const displayName = (currentUser?.role === 'admin' || currentUser?.email === 'admin@empresa.com' || currentUser?.name?.toLowerCase().includes('pedro'))
-    ? 'Jeisson Orlando Paternina'
+  const displayName = (currentUser?.role === 'admin' || currentUser?.email === 'admin@empresa.com' || currentUser?.name?.toLowerCase().includes('pedro') || currentUser?.name?.toLowerCase().includes('jeisson'))
+    ? 'Pedro Ramón Albarracín'
     : (currentUser?.name || 'Usuario');
 
   return (
@@ -171,7 +171,7 @@ export default function Header({
                 {displayName.charAt(0).toUpperCase()}
               </div>
               <div className="hidden md:block text-left text-xs leading-tight">
-                <span className="font-bold text-slate-800 block truncate max-w-[120px]">
+                <span className="font-bold text-slate-800 block truncate max-w-[220px]" title={displayName}>
                   {displayName}
                 </span>
                 <span className="text-[10px] text-slate-500 font-medium capitalize">

@@ -2,7 +2,28 @@ import React, { useState, useEffect } from 'react';
 import api from '../../api/client';
 import ControlPanel from '../../components/ControlPanel';
 import { formatCOP } from '../../utils/format';
-import { Package, Truck, CheckCircle2, Clock, Plus, X, AlertTriangle, Pencil, Trash2, Edit3, Save } from 'lucide-react';
+import { Package, Truck, CheckCircle2, Clock, Plus, X, AlertTriangle, Pencil, Trash2, Edit3, Save, Layers } from 'lucide-react';
+
+export function getPresentationBadge(uomName) {
+  if (!uomName) return { label: 'Unidad', color: 'bg-slate-100 text-slate-700 border-slate-200', icon: '⚙️' };
+  const uomLower = uomName.toLowerCase();
+  if (uomLower.includes('tambor') || uomLower.includes('barril') || uomLower.includes('55 gal')) {
+    return { label: uomName, color: 'bg-blue-50 text-blue-800 border-blue-200', icon: '🛢️' };
+  }
+  if (uomLower.includes('balde') || uomLower.includes('cuñete') || uomLower.includes('5 gal') || uomLower.includes('35 lb')) {
+    return { label: uomName, color: 'bg-amber-50 text-amber-800 border-amber-200', icon: '🪣' };
+  }
+  if (uomLower.includes('garrafa') || uomLower.includes('1 gal')) {
+    return { label: uomName, color: 'bg-teal-50 text-teal-800 border-teal-200', icon: '🧴' };
+  }
+  if (uomLower.includes('caja')) {
+    return { label: uomName, color: 'bg-purple-50 text-purple-800 border-purple-200', icon: '📦' };
+  }
+  if (uomLower.includes('servicio')) {
+    return { label: uomName, color: 'bg-emerald-50 text-emerald-800 border-emerald-200', icon: '🔧' };
+  }
+  return { label: uomName, color: 'bg-slate-50 text-slate-700 border-slate-200', icon: '⚙️' };
+}
 
 export default function InventoryView({ subView = 'products', onHome }) {
   const [currentTab, setCurrentTab] = useState(subView === 'pickings' ? 'pickings' : 'products');
@@ -199,6 +220,7 @@ export default function InventoryView({ subView = 'products', onHome }) {
               {products.map((p) => {
                 const isOutOfStock = p.qty_available <= 0;
                 const isLowStock = p.qty_available > 0 && p.qty_available <= 5;
+                const badge = getPresentationBadge(p.uom_name);
                 return (
                   <div
                     key={p.id}
@@ -223,6 +245,12 @@ export default function InventoryView({ subView = 'products', onHome }) {
                       </div>
 
                       <div className="mt-3">
+                        <div className="flex items-center space-x-1.5 mb-1.5">
+                          <span className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-[10px] font-black border uppercase tracking-wider ${badge.color}`}>
+                            <span>{badge.icon}</span>
+                            <span>{badge.label}</span>
+                          </span>
+                        </div>
                         <h4 className="font-bold text-slate-900 text-sm line-clamp-1" title={p.name}>
                           {p.name}
                         </h4>
@@ -286,26 +314,33 @@ export default function InventoryView({ subView = 'products', onHome }) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {products.map((p) => (
-                    <tr key={p.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="py-3 px-4 font-mono font-bold text-xs text-blue-700">
-                        {p.default_code || '-'}
-                      </td>
-                      <td className="py-3 px-4 font-semibold text-slate-900">{p.name}</td>
-                      <td className="py-3 px-4 text-xs text-slate-500">{p.uom_name || 'Unidad'}</td>
-                      <td className="py-3 px-4 text-right font-bold text-slate-900">{formatCOP(p.list_price)}</td>
-                      <td className="py-3 px-4 text-right text-slate-600">{formatCOP(p.standard_price)}</td>
-                      <td className="py-3 px-4 text-right font-black">
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
-                          p.qty_available <= 0
-                            ? 'bg-rose-100 text-rose-700'
-                            : p.qty_available <= 5
-                            ? 'bg-amber-100 text-amber-800'
-                            : 'bg-emerald-100 text-emerald-800'
-                        }`}>
-                          {p.qty_available} {p.uom_name}
-                        </span>
-                      </td>
+                  {products.map((p) => {
+                    const badge = getPresentationBadge(p.uom_name);
+                    return (
+                      <tr key={p.id} className="hover:bg-slate-50 transition-colors">
+                        <td className="py-3 px-4 font-mono font-bold text-xs text-blue-700">
+                          {p.default_code || '-'}
+                        </td>
+                        <td className="py-3 px-4 font-semibold text-slate-900">{p.name}</td>
+                        <td className="py-3 px-4">
+                          <span className={`inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-bold border ${badge.color}`}>
+                            <span>{badge.icon}</span>
+                            <span>{badge.label}</span>
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-right font-bold text-slate-900">{formatCOP(p.list_price)}</td>
+                        <td className="py-3 px-4 text-right text-slate-600">{formatCOP(p.standard_price)}</td>
+                        <td className="py-3 px-4 text-right font-black">
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                            p.qty_available <= 0
+                              ? 'bg-rose-100 text-rose-700'
+                              : p.qty_available <= 5
+                              ? 'bg-amber-100 text-amber-800'
+                              : 'bg-emerald-100 text-emerald-800'
+                          }`}>
+                            {p.qty_available} {p.uom_name}
+                          </span>
+                        </td>
                       <td className="py-3 px-4 text-center">
                         <div className="flex items-center justify-center space-x-1.5">
                           <button
@@ -327,7 +362,8 @@ export default function InventoryView({ subView = 'products', onHome }) {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -540,15 +576,63 @@ export default function InventoryView({ subView = 'products', onHome }) {
                   </div>
                   <div>
                     <label className="block text-xs font-bold uppercase text-slate-600 mb-1">
-                      Unidad de Medida
+                      Presentación / Envase *
                     </label>
-                    <input
-                      type="text"
-                      placeholder="Tambor (55 Gal), Balde, Unidad"
-                      value={productForm.uom_name}
-                      onChange={(e) => setProductForm({ ...productForm, uom_name: e.target.value })}
-                      className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs font-medium"
-                    />
+                    <div className="space-y-1.5">
+                      <select
+                        value={[
+                          'Tambor (55 Gal)',
+                          'Balde (5 Gal)',
+                          'Garrafa (1 Gal)',
+                          'Caja (12 Cuartos)',
+                          'Caja (24 Und)',
+                          'Balde (35 lb)',
+                          'Cuarto (946 ml)',
+                          'Unidades',
+                          'Servicio'
+                        ].includes(productForm.uom_name) ? productForm.uom_name : 'custom'}
+                        onChange={(e) => {
+                          if (e.target.value !== 'custom') {
+                            setProductForm({ ...productForm, uom_name: e.target.value });
+                          } else {
+                            setProductForm({ ...productForm, uom_name: '' });
+                          }
+                        }}
+                        className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 text-xs font-bold text-slate-800 cursor-pointer"
+                      >
+                        <option value="Tambor (55 Gal)">🛢️ Tambor (55 Gal / 208 Litros)</option>
+                        <option value="Balde (5 Gal)">🪣 Balde / Cuñete (5 Gal / 19 Litros)</option>
+                        <option value="Garrafa (1 Gal)">🧴 Garrafa (1 Galón / 3.785 L)</option>
+                        <option value="Caja (12 Cuartos)">📦 Caja x 12 Cuartos (946 ml)</option>
+                        <option value="Caja (24 Und)">📦 Caja x 24 Unidades</option>
+                        <option value="Balde (35 lb)">🪣 Balde Grasa (35 lb / 16 kg)</option>
+                        <option value="Cuarto (946 ml)">🧴 Cuarto de Galón (946 ml)</option>
+                        <option value="Unidades">⚙️ Unidad / Pieza (Filtro)</option>
+                        <option value="Servicio">🔧 Servicio Técnico</option>
+                        <option value="custom">✏️ Otra presentación (personalizada)...</option>
+                      </select>
+
+                      {![
+                        'Tambor (55 Gal)',
+                        'Balde (5 Gal)',
+                        'Garrafa (1 Gal)',
+                        'Caja (12 Cuartos)',
+                        'Caja (24 Und)',
+                        'Balde (35 lb)',
+                        'Cuarto (946 ml)',
+                        'Unidades',
+                        'Servicio'
+                      ].includes(productForm.uom_name) && (
+                        <input
+                          type="text"
+                          placeholder="Escribe la presentación (ej. Caneca 55 Gal)"
+                          value={productForm.uom_name}
+                          onChange={(e) => setProductForm({ ...productForm, uom_name: e.target.value })}
+                          className="w-full px-3 py-1.5 bg-blue-50/40 border border-blue-300 rounded-lg text-xs font-semibold focus:bg-white"
+                          autoFocus
+                        />
+                      )}
+                    </div>
                   </div>
                 </div>
               )}

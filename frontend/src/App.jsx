@@ -16,11 +16,11 @@ export default function App() {
     try {
       const parsed = JSON.parse(saved);
       // Auto-corregir inmediatamente nombres obsoletos guardados en la caché del navegador
-      if (parsed.name && (parsed.name.toLowerCase().includes('pedro') || parsed.name.toLowerCase().includes('albarracin') || parsed.role === 'admin')) {
-        parsed.name = 'Jeisson Orlando Paternina';
+      if (parsed.role === 'admin' || parsed.email === 'admin@empresa.com' || parsed.name?.toLowerCase().includes('pedro') || parsed.name?.toLowerCase().includes('albarracin') || parsed.name?.toLowerCase().includes('jeisson')) {
+        parsed.name = 'Pedro Ramón Albarracín';
         parsed.city = parsed.city || 'Bucaramanga (Sede Principal)';
         localStorage.setItem('erp_user', JSON.stringify(parsed));
-      } else if (parsed.role === 'employee' && (parsed.name.toLowerCase().includes('invitado') || parsed.name.toLowerCase().includes('pedro'))) {
+      } else if (parsed.role === 'employee' && (parsed.name.toLowerCase().includes('invitado') || parsed.name.toLowerCase().includes('demo'))) {
         parsed.name = 'Santiago Galvis';
         parsed.city = parsed.city || 'El Centro, Barrancabermeja';
         localStorage.setItem('erp_user', JSON.stringify(parsed));
@@ -39,8 +39,8 @@ export default function App() {
         .then((res) => {
           if (res.data) {
             const u = res.data;
-            if (u.name && (u.name.toLowerCase().includes('pedro') || u.name.toLowerCase().includes('albarracin') || u.role === 'admin')) {
-              u.name = 'Jeisson Orlando Paternina';
+            if (u.role === 'admin' || u.email === 'admin@empresa.com' || u.name?.toLowerCase().includes('pedro') || u.name?.toLowerCase().includes('jeisson')) {
+              u.name = 'Pedro Ramón Albarracín';
             }
             setCurrentUser(u);
             localStorage.setItem('erp_user', JSON.stringify(u));

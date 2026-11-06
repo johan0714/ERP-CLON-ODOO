@@ -152,7 +152,7 @@ export default function LoginView({ onLoginSuccess }) {
                 <ShieldCheck className="w-4 h-4" />
                 <span>Administrador</span>
               </div>
-              <div className="text-[11px] text-slate-800 font-bold truncate">Jeisson Orlando Paternina</div>
+              <div className="text-[11px] text-slate-800 font-bold truncate">Pedro Ramón Albarracín</div>
               <div className="text-[10px] text-slate-500 flex items-center space-x-1 mt-0.5">
                 <MapPin className="w-3 h-3 text-blue-600 shrink-0" />
                 <span className="truncate">Bucaramanga</span>

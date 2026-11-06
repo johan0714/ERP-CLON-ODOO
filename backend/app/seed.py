@@ -11,8 +11,8 @@ def run_seed():
     # 0. Usuarios Santander (Bucaramanga y El Centro, Barrancabermeja)
     all_users = db.query(ResUser).all()
     for u in all_users:
-        if u.role == "admin" or u.email == "admin@empresa.com" or "pedro" in u.name.lower() or "albarracin" in u.name.lower():
-            u.name = "Jeisson Orlando Paternina"
+        if u.role == "admin" or u.email == "admin@empresa.com" or "pedro" in u.name.lower() or "albarracin" in u.name.lower() or "jeisson" in u.name.lower():
+            u.name = "Pedro Ramón Albarracín"
             u.email = "admin@empresa.com"
             u.role = "admin"
             u.city = "Bucaramanga (Sede Principal)"
@@ -28,7 +28,7 @@ def run_seed():
     admin_u = db.query(ResUser).filter(ResUser.email == "admin@empresa.com").first()
     if not admin_u:
         admin_u = ResUser(
-            name="Jeisson Orlando Paternina",
+            name="Pedro Ramón Albarracín",
             email="admin@empresa.com",
             hashed_password=hash_password("admin123"),
             role="admin",
@@ -208,6 +208,36 @@ def run_seed():
             "qty_available": 0.0, # Agotado para activar alerta roja
             "uom_name": "Balde (35 lb)",
             "description": "Grasa con polímeros adhesivos de máxima resistencia al lavado por agua para chasis y quinta rueda.",
+        },
+        {
+            "default_code": "LUB-15W40-GARR",
+            "name": "Aceite Motor 15W-40 CI-4/SL (Garrafa 1 Galón)",
+            "type": "product",
+            "list_price": 78000.0,
+            "standard_price": 54000.0,
+            "qty_available": 50.0,
+            "uom_name": "Garrafa (1 Gal)",
+            "description": "Garrafa individual de galón para reposición y vehículos livianos diésel.",
+        },
+        {
+            "default_code": "LUB-5W30-CAJA12",
+            "name": "Aceite 100% Sintético 5W-30 Dexos1 (Caja x 12 Cuartos)",
+            "type": "product",
+            "list_price": 420000.0,
+            "standard_price": 295000.0,
+            "qty_available": 16.0,
+            "uom_name": "Caja (12 Cuartos)",
+            "description": "Caja máster de 12 botellas de 946 ml para camionetas y flotas modernas a gasolina/diésel ligero.",
+        },
+        {
+            "default_code": "FLT-PH8A-CAJA24",
+            "name": "Filtro de Aceite Universal Spin-On (Caja x 24 Unidades)",
+            "type": "product",
+            "list_price": 520000.0,
+            "standard_price": 360000.0,
+            "qty_available": 8.0,
+            "uom_name": "Caja (24 Und)",
+            "description": "Empaque mayorista de filtros para distribución rápida a talleres y servitecas.",
         },
         {
             "default_code": "SRV-LUB-FLOTA",

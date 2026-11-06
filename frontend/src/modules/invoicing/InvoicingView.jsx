@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../../api/client';
 import ControlPanel from '../../components/ControlPanel';
 import { formatCOP } from '../../utils/format';
+import { getPresentationBadge } from '../inventory/InventoryView';
 import {
   Receipt,
   CheckCircle,
@@ -418,6 +419,7 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                     <thead className="bg-slate-100 text-slate-600 uppercase font-semibold">
                       <tr>
                         <th className="py-2.5 px-3">Concepto / Producto</th>
+                        <th className="py-2.5 px-2 text-center w-28">Presentación</th>
                         <th className="py-2.5 px-3 text-right">Cantidad</th>
                         <th className="py-2.5 px-3 text-right">Precio Unitario</th>
                         <th className="py-2.5 px-3 text-right">IVA</th>
@@ -428,6 +430,9 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                       {selectedInvoice.invoice_lines?.map((il) => (
                         <tr key={il.id}>
                           <td className="py-2.5 px-3 font-semibold text-slate-800">{il.name}</td>
+                          <td className="py-2.5 px-2 text-center">
+                            {getPresentationBadge(il.product?.uom_name || (il.name?.includes('(') ? il.name.split('(')[1]?.replace(')', '') : ''))}
+                          </td>
                           <td className="py-2.5 px-3 text-right font-bold">{il.quantity}</td>
                           <td className="py-2.5 px-3 text-right">{formatCOP(il.price_unit)}</td>
                           <td className="py-2.5 px-3 text-right">

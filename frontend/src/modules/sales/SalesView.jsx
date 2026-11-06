@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../../api/client';
 import ControlPanel from '../../components/ControlPanel';
 import { formatCOP } from '../../utils/format';
+import { getPresentationBadge } from '../inventory/InventoryView';
 import {
   FileText,
   Truck,
@@ -390,10 +391,11 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                 </div>
 
                 <div className="border border-slate-200 rounded-xl overflow-x-auto shadow-2xs">
-                  <table className="w-full min-w-[760px] text-left text-xs">
+                  <table className="w-full min-w-[840px] text-left text-xs">
                     <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase">
                       <tr>
                         <th className="py-2.5 px-3">Producto / Referencia</th>
+                        <th className="py-2.5 px-2 text-center w-28">Presentación</th>
                         <th className="py-2.5 px-2 w-20 text-right">Cant.</th>
                         <th className="py-2.5 px-2 w-28 text-right" title="Costo de compra o adquisición">
                           Costo Adq.
@@ -414,6 +416,8 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                         const lineSub = (line.product_uom_qty || 0) * (line.price_unit || 0);
                         const marginVal = line.margin_percent !== undefined ? line.margin_percent : 0;
                         const isMarginPositive = marginVal >= 0;
+                        const selectedProd = products.find((p) => p.id === parseInt(line.product_id));
+                        const badge = getPresentationBadge(selectedProd?.uom_name);
                         return (
                           <tr key={idx} className="hover:bg-slate-50">
                             {/* Producto */}
@@ -425,10 +429,18 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                               >
                                 {products.map((p) => (
                                   <option key={p.id} value={p.id}>
-                                    {p.name}
+                                    {p.name} [{p.uom_name || 'Unidad'}]
                                   </option>
                                 ))}
                               </select>
+                            </td>
+
+                            {/* Presentación Badge */}
+                            <td className="py-2 px-2 text-center">
+                              <span className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-[10px] font-black border uppercase tracking-wider ${badge.color}`}>
+                                <span>{badge.icon}</span>
+                                <span>{badge.label}</span>
+                              </span>
                             </td>
 
                             {/* Cantidad */}
@@ -723,6 +735,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                     <thead className="bg-slate-100 text-slate-600 uppercase font-semibold">
                       <tr>
                         <th className="py-2.5 px-3">Producto / Concepto</th>
+                        <th className="py-2.5 px-2 text-center w-28">Presentación</th>
                         <th className="py-2.5 px-3 text-right">Cant. Pedida</th>
                         <th className="py-2.5 px-3 text-right">Cant. Entregada</th>
                         <th className="py-2.5 px-3 text-right">Cant. Facturada</th>
@@ -732,27 +745,36 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      {selectedOrder.order_lines.map((l) => (
-                        <tr key={l.id}>
-                          <td className="py-2.5 px-3 font-semibold text-slate-800">{l.name}</td>
-                          <td className="py-2.5 px-3 text-right font-bold">{l.product_uom_qty}</td>
-                          <td className="py-2.5 px-3 text-right font-semibold text-amber-700">{l.qty_delivered}</td>
-                          <td className="py-2.5 px-3 text-right font-semibold text-emerald-700">{l.qty_invoiced}</td>
-                          <td className="py-2.5 px-3 text-right">{formatCOP(l.price_unit)}</td>
-                          <td className="py-2.5 px-3 text-right">
-                            {l.tax_percent === 0 ? (
-                              <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                0% Exento
+                      {selectedOrder.order_lines.map((l) => {
+                        const badge = getPresentationBadge(l.product?.uom_name);
+                        return (
+                          <tr key={l.id}>
+                            <td className="py-2.5 px-3 font-semibold text-slate-800">{l.name}</td>
+                            <td className="py-2.5 px-2 text-center">
+                              <span className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-[10px] font-black border uppercase tracking-wider ${badge.color}`}>
+                                <span>{badge.icon}</span>
+                                <span>{badge.label}</span>
                               </span>
-                            ) : (
-                              <span className="font-semibold text-slate-600">{l.tax_percent}%</span>
-                            )}
-                          </td>
-                          <td className="py-2.5 px-3 text-right font-bold text-slate-900">
-                            {formatCOP(l.price_subtotal)}
-                          </td>
-                        </tr>
-                      ))}
+                            </td>
+                            <td className="py-2.5 px-3 text-right font-bold">{l.product_uom_qty}</td>
+                            <td className="py-2.5 px-3 text-right font-semibold text-amber-700">{l.qty_delivered}</td>
+                            <td className="py-2.5 px-3 text-right font-semibold text-emerald-700">{l.qty_invoiced}</td>
+                            <td className="py-2.5 px-3 text-right">{formatCOP(l.price_unit)}</td>
+                            <td className="py-2.5 px-3 text-right">
+                              {l.tax_percent === 0 ? (
+                                <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                  0% Exento
+                                </span>
+                              ) : (
+                                <span className="font-semibold text-slate-600">{l.tax_percent}%</span>
+                              )}
+                            </td>
+                            <td className="py-2.5 px-3 text-right font-bold text-slate-900">
+                              {formatCOP(l.price_subtotal)}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
