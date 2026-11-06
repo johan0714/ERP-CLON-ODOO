@@ -192,3 +192,38 @@ def create_invoice_from_order(order_id: int, db: Session = Depends(get_db)):
     db.refresh(invoice)
 
     return {"message": "Factura creada con éxito", "invoice_id": invoice.id, "invoice_name": invoice.name}
+
+
+@router.delete("/{order_id}")
+def delete_sales_order(order_id: int, db: Session = Depends(get_db)):
+    """Elimina un pedido de venta y limpia sus registros relacionados (remisiones y facturas asociadas)."""
+    order = db.query(SaleOrder).filter(SaleOrder.id == order_id).first()
+    if not order:
+        raise HTTPException(status_code=404, detail="Pedido no encontrado")
+
+    # 1. Limpiar o revertir remisiones asociadas (StockPicking)
+    pickings = db.query(StockPicking).filter(StockPicking.origin == order.name).all()
+    for picking in pickings:
+        for move in picking.move_lines:
+            # Si ya se había descontado stock, revertir el inventario al eliminar el pedido
+            if move.state == "done" and move.quantity_done > 0:
+                prod = db.query(ProductProduct).filter(ProductProduct.id == move.product_id).first()
+                if prod:
+                    prod.qty_available += move.quantity_done
+            db.delete(move)
+        db.delete(picking)
+
+    # 2. Limpiar facturas asociadas generadas desde este pedido
+    invoices = db.query(AccountMove).filter(
+        (AccountMove.sale_order_id == order.id) | (AccountMove.invoice_origin == order.name)
+    ).all()
+    for inv in invoices:
+        db.delete(inv)
+
+    # 3. Eliminar el pedido de venta (sus order_lines se eliminan por cascade)
+    order_name = order.name
+    db.delete(order)
+    db.commit()
+
+    return {"message": f"Pedido {order_name} eliminado con éxito", "id": order_id}
+

@@ -3,7 +3,7 @@ from typing import List, Optional, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 from backend.app.core.database import get_db
-from backend.app.models.models import AccountMove, AccountPayment, IrSequence, DianConfig, DianInvoiceStamp
+from backend.app.models.models import AccountMove, AccountPayment, IrSequence, DianConfig, DianInvoiceStamp, SaleOrder
 from backend.app.schemas.schemas import AccountMoveOut, AccountPaymentCreate, AccountPaymentOut, DianConfigIn, DianConfigOut, DianInvoiceStampOut
 from backend.app.services.factus_service import get_or_create_dian_config, test_factus_connection, emit_invoice_to_dian
 
@@ -174,3 +174,26 @@ def register_payment(invoice_id: int, payment_in: AccountPaymentCreate, db: Sess
     db.commit()
     db.refresh(payment)
     return payment
+
+
+@router.delete("/{invoice_id}")
+def delete_invoice(invoice_id: int, db: Session = Depends(get_db)):
+    """Elimina una factura de cliente y restablece el estado del pedido de venta si aplica."""
+    inv = db.query(AccountMove).filter(AccountMove.id == invoice_id).first()
+    if not inv:
+        raise HTTPException(status_code=404, detail="Factura no encontrada")
+
+    # Si la factura venía de un pedido de venta, restablecer estado del pedido
+    if inv.sale_order_id:
+        so = db.query(SaleOrder).filter(SaleOrder.id == inv.sale_order_id).first()
+        if so:
+            so.invoice_status = "to_invoice" if so.state == "sale" else "no"
+            for sol in so.order_lines:
+                sol.qty_invoiced = 0.0
+
+    inv_name = inv.name
+    db.delete(inv)
+    db.commit()
+
+    return {"message": f"Factura {inv_name} eliminada con éxito", "id": invoice_id}
+

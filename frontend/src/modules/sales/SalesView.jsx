@@ -283,6 +283,22 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
     }
   };
 
+  const handleDeleteOrder = async (orderId) => {
+    if (!window.confirm('¿Estás seguro de que deseas eliminar este pedido permanentemente? Esta acción limpiará también las remisiones y facturas asociadas a él.')) {
+      return;
+    }
+    try {
+      await api.delete(`/sales/${orderId}`);
+      if (selectedOrder && selectedOrder.id === orderId) {
+        setSelectedOrder(null);
+      }
+      fetchOrders();
+      alert('Pedido de venta eliminado con éxito');
+    } catch (err) {
+      alert('Error al eliminar el pedido: ' + (err.response?.data?.detail || err.message));
+    }
+  };
+
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* Control Panel */}
@@ -595,6 +611,16 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                     Crear Factura
                   </button>
                 )}
+
+                <button
+                  type="button"
+                  onClick={() => handleDeleteOrder(selectedOrder.id)}
+                  className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 text-xs font-bold transition cursor-pointer"
+                  title="Eliminar este pedido permanentemente"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Eliminar Pedido</span>
+                </button>
               </div>
 
               {/* Status Stepper (Borrador -> Pedido de Venta -> Bloqueado) */}
@@ -764,12 +790,13 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                   <th className="py-3 px-4 text-center">Estado Entrega</th>
                   <th className="py-3 px-4 text-center">Estado Factura</th>
                   <th className="py-3 px-4 text-right">Estado Pedido</th>
+                  <th className="py-3 px-4 text-center w-14">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {orders.length === 0 ? (
                   <tr>
-                    <td colSpan="7" className="py-8 text-center text-slate-400">
+                    <td colSpan="8" className="py-8 text-center text-slate-400">
                       No hay pedidos registrados. Haz clic en "Nuevo Pedido" para crear un presupuesto.
                     </td>
                   </tr>
@@ -826,6 +853,16 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                         >
                           {o.state === 'sale' ? 'Pedido Venta' : 'Presupuesto'}
                         </span>
+                      </td>
+                      <td className="py-3 px-4 text-center" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteOrder(o.id)}
+                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer"
+                          title="Eliminar pedido permanentemente"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </td>
                     </tr>
                   ))

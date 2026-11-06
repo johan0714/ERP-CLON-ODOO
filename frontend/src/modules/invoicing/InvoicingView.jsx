@@ -18,7 +18,8 @@ import {
   Settings,
   FileCode,
   RefreshCw,
-  AlertCircle
+  AlertCircle,
+  Trash2
 } from 'lucide-react';
 
 export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
@@ -108,6 +109,22 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
     navigator.clipboard.writeText(cufe);
     setCopiedCufe(true);
     setTimeout(() => setCopiedCufe(false), 2000);
+  };
+
+  const handleDeleteInvoice = async (invId) => {
+    if (!window.confirm('¿Estás seguro de que deseas eliminar esta factura? Si proviene de un pedido de venta, su estado de facturación se restablecerá automáticamente.')) {
+      return;
+    }
+    try {
+      await api.delete(`/invoicing/${invId}`);
+      if (selectedInvoice && selectedInvoice.id === invId) {
+        setSelectedInvoice(null);
+      }
+      fetchInvoices();
+      alert('Factura eliminada con éxito');
+    } catch (err) {
+      alert('Error al eliminar la factura: ' + (err.response?.data?.detail || err.message));
+    }
   };
 
   useEffect(() => {
@@ -244,6 +261,16 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                     <span>Registrar Pago</span>
                   </button>
                 )}
+
+                <button
+                  type="button"
+                  onClick={() => handleDeleteInvoice(selectedInvoice.id)}
+                  className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 text-xs font-bold transition cursor-pointer"
+                  title="Eliminar esta factura permanentemente"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Eliminar Factura</span>
+                </button>
               </div>
 
               {/* Status Stepper */}
@@ -493,12 +520,13 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                   <th className="py-3 px-4 text-right">Pendiente</th>
                   <th className="py-3 px-4 text-center">Estado Pago</th>
                   <th className="py-3 px-4 text-right">Estado</th>
+                  <th className="py-3 px-4 text-center w-14">Acciones</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {invoices.length === 0 ? (
                   <tr>
-                    <td colSpan="9" className="py-8 text-center text-slate-400">
+                    <td colSpan="10" className="py-8 text-center text-slate-400">
                       No hay facturas registradas. Puedes generarlas desde pedidos de venta confirmados.
                     </td>
                   </tr>
@@ -560,6 +588,16 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                         >
                           {inv.state === 'posted' ? 'Publicada' : 'Borrador'}
                         </span>
+                      </td>
+                      <td className="py-3 px-4 text-center" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteInvoice(inv.id)}
+                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer"
+                          title="Eliminar factura permanentemente"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </td>
                     </tr>
                   ))
