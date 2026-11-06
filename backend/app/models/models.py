@@ -113,6 +113,7 @@ class StockMove(Base):
     picking_id = Column(Integer, ForeignKey("stock_picking.id"), nullable=False)
     product_id = Column(Integer, ForeignKey("product_product.id"), nullable=False)
     name = Column(String(255), nullable=False)
+    uom_name = Column(String(64), nullable=True)
     product_uom_qty = Column(Float, default=1.0)  # Cantidad demandada
     quantity_done = Column(Float, default=0.0)  # Cantidad entregada/recibida
     state = Column(String(32), default="draft")
@@ -150,6 +151,7 @@ class SaleOrderLine(Base):
     order_id = Column(Integer, ForeignKey("sale_order.id"), nullable=False)
     product_id = Column(Integer, ForeignKey("product_product.id"), nullable=False)
     name = Column(String(255), nullable=False)
+    uom_name = Column(String(64), nullable=True)
     product_uom_qty = Column(Float, default=1.0)
     qty_delivered = Column(Float, default=0.0)
     qty_invoiced = Column(Float, default=0.0)
@@ -199,6 +201,7 @@ class AccountMoveLine(Base):
     move_id = Column(Integer, ForeignKey("account_move.id"), nullable=False)
     product_id = Column(Integer, ForeignKey("product_product.id"), nullable=True)
     name = Column(String(255), nullable=False)
+    uom_name = Column(String(64), nullable=True)
     quantity = Column(Float, default=1.0)
     price_unit = Column(Float, default=0.0)
     tax_percent = Column(Float, default=19.0)

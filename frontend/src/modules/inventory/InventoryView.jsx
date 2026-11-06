@@ -25,6 +25,20 @@ export function getPresentationBadge(uomName) {
   return { label: uomName, color: 'bg-slate-50 text-slate-700 border-slate-200', icon: '⚙️' };
 }
 
+export const COMMERCIAL_PRESENTATIONS = [
+  { value: 'Tambor (55 Gal)', label: '🛢️ Tambor (55 Gal)' },
+  { value: 'Balde (5 Gal)', label: '🪣 Balde (5 Gal)' },
+  { value: 'Balde (35 lb)', label: '🪣 Balde (35 lb)' },
+  { value: 'Garrafa (1 Gal)', label: '🧴 Garrafa (1 Gal)' },
+  { value: 'Caja (12 Cuartos)', label: '📦 Caja (12 Cuartos)' },
+  { value: 'Caja (24 Und)', label: '📦 Caja (24 Und)' },
+  { value: 'Cuarto (946 ml)', label: '🍶 Cuarto (946 ml)' },
+  { value: 'Galón', label: '⛽ Galón' },
+  { value: 'Litro', label: '🥤 Litro' },
+  { value: 'Unidad', label: '⚙️ Unidad / Filtro' },
+  { value: 'Servicio', label: '🔧 Servicio' },
+];
+
 export default function InventoryView({ subView = 'products', onHome }) {
   const [currentTab, setCurrentTab] = useState(subView === 'pickings' ? 'pickings' : 'products');
   const [products, setProducts] = useState([]);

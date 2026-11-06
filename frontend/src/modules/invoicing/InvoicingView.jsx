@@ -431,7 +431,15 @@ export default function InvoicingView({ defaultInvoiceId = null, onHome }) {
                         <tr key={il.id}>
                           <td className="py-2.5 px-3 font-semibold text-slate-800">{il.name}</td>
                           <td className="py-2.5 px-2 text-center">
-                            {getPresentationBadge(il.product?.uom_name || (il.name?.includes('(') ? il.name.split('(')[1]?.replace(')', '') : ''))}
+                            {(() => {
+                              const badge = getPresentationBadge(il.uom_name || il.product?.uom_name);
+                              return (
+                                <span className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-[10px] font-black border uppercase tracking-wider ${badge.color}`}>
+                                  <span>{badge.icon}</span>
+                                  <span>{il.uom_name || badge.label}</span>
+                                </span>
+                              );
+                            })()}
                           </td>
                           <td className="py-2.5 px-3 text-right font-bold">{il.quantity}</td>
                           <td className="py-2.5 px-3 text-right">{formatCOP(il.price_unit)}</td>

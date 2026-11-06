@@ -99,6 +99,7 @@ class StockPickingValidate(BaseModel):
 class SaleOrderLineCreate(BaseModel):
     product_id: int
     name: Optional[str] = None
+    uom_name: Optional[str] = None
     product_uom_qty: float = 1.0
     price_unit: float
     tax_percent: float = 19.0
@@ -108,6 +109,7 @@ class SaleOrderLineOut(BaseModel):
     id: int
     product_id: int
     name: str
+    uom_name: Optional[str] = None
     product_uom_qty: float
     qty_delivered: float
     qty_invoiced: float
@@ -156,6 +158,7 @@ class AccountMoveLineOut(BaseModel):
     id: int
     product_id: Optional[int] = None
     name: str
+    uom_name: Optional[str] = None
     quantity: float
     price_unit: float
     tax_percent: float

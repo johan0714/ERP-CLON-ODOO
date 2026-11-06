@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../../api/client';
 import ControlPanel from '../../components/ControlPanel';
 import { formatCOP } from '../../utils/format';
-import { getPresentationBadge } from '../inventory/InventoryView';
+import { getPresentationBadge, COMMERCIAL_PRESENTATIONS } from '../inventory/InventoryView';
 import {
   FileText,
   Truck,
@@ -96,6 +96,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
         {
           product_id: defaultProd ? defaultProd.id : '',
           name: defaultProd ? defaultProd.name : '',
+          uom_name: defaultProd?.uom_name || 'Balde (5 Gal)',
           cost_price: cost,
           margin_percent: margin,
           product_uom_qty: 1,
@@ -119,6 +120,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
         {
           product_id: defaultProd ? defaultProd.id : '',
           name: defaultProd ? defaultProd.name : '',
+          uom_name: defaultProd?.uom_name || 'Balde (5 Gal)',
           cost_price: cost,
           margin_percent: margin,
           product_uom_qty: 1,
@@ -145,9 +147,16 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
     const updated = [...newOrderData.lines];
     updated[idx].product_id = prod.id;
     updated[idx].name = prod.name;
+    updated[idx].uom_name = prod.uom_name || 'Balde (5 Gal)';
     updated[idx].cost_price = cost;
     updated[idx].margin_percent = margin;
     updated[idx].price_unit = price;
+    setNewOrderData({ ...newOrderData, lines: updated });
+  };
+
+  const handleLineUomChange = (idx, uom) => {
+    const updated = [...newOrderData.lines];
+    updated[idx].uom_name = uom;
     setNewOrderData({ ...newOrderData, lines: updated });
   };
 
@@ -247,6 +256,7 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
         lines: newOrderData.lines.map((l) => ({
           product_id: parseInt(l.product_id),
           name: l.name,
+          uom_name: l.uom_name || 'Balde (5 Gal)',
           product_uom_qty: l.product_uom_qty,
           price_unit: l.price_unit,
           tax_percent: l.tax_percent,
@@ -394,8 +404,10 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                   <table className="w-full min-w-[840px] text-left text-xs">
                     <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase">
                       <tr>
-                        <th className="py-2.5 px-3">Producto / Referencia</th>
-                        <th className="py-2.5 px-2 text-center w-28">Presentación</th>
+                        <th className="py-2.5 px-3 min-w-[200px]">Producto / Referencia</th>
+                        <th className="py-2.5 px-2 w-44 text-left" title="Presentación del producto (Balde, Tambor, Garrafa, Caja, etc.)">
+                          Presentación
+                        </th>
                         <th className="py-2.5 px-2 w-20 text-right">Cant.</th>
                         <th className="py-2.5 px-2 w-28 text-right" title="Costo de compra o adquisición">
                           Costo Adq.
@@ -417,7 +429,8 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                         const marginVal = line.margin_percent !== undefined ? line.margin_percent : 0;
                         const isMarginPositive = marginVal >= 0;
                         const selectedProd = products.find((p) => p.id === parseInt(line.product_id));
-                        const badge = getPresentationBadge(selectedProd?.uom_name);
+                        const currentUom = line.uom_name || selectedProd?.uom_name || 'Balde (5 Gal)';
+                        const badge = getPresentationBadge(currentUom);
                         return (
                           <tr key={idx} className="hover:bg-slate-50">
                             {/* Producto */}
@@ -429,18 +442,31 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                               >
                                 {products.map((p) => (
                                   <option key={p.id} value={p.id}>
-                                    {p.name} [{p.uom_name || 'Unidad'}]
+                                    {p.name}
                                   </option>
                                 ))}
                               </select>
                             </td>
 
-                            {/* Presentación Badge */}
-                            <td className="py-2 px-2 text-center">
-                              <span className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-[10px] font-black border uppercase tracking-wider ${badge.color}`}>
-                                <span>{badge.icon}</span>
-                                <span>{badge.label}</span>
-                              </span>
+                            {/* Cuadro para elegir Presentación al lado del nombre */}
+                            <td className="py-2 px-2">
+                              <select
+                                value={currentUom}
+                                onChange={(e) => handleLineUomChange(idx, e.target.value)}
+                                className="w-full py-1.5 px-2 border border-blue-400 bg-blue-50/40 hover:bg-white rounded-lg text-xs font-bold text-slate-800 focus:bg-white focus:ring-2 focus:ring-blue-600 transition cursor-pointer"
+                                title="Elegir si es Balde, Tambor, Garrafa, Caja, etc."
+                              >
+                                {COMMERCIAL_PRESENTATIONS.map((opt) => (
+                                  <option key={opt.value} value={opt.value}>
+                                    {opt.label}
+                                  </option>
+                                ))}
+                                {selectedProd?.uom_name && !COMMERCIAL_PRESENTATIONS.some((o) => o.value === selectedProd.uom_name) && (
+                                  <option value={selectedProd.uom_name}>
+                                    {selectedProd.uom_name}
+                                  </option>
+                                )}
+                              </select>
                             </td>
 
                             {/* Cantidad */}
@@ -746,14 +772,14 @@ export default function SalesView({ onOpenDelivery, onOpenInvoice, onHome }) {
                     </thead>
                     <tbody className="divide-y divide-slate-100">
                       {selectedOrder.order_lines.map((l) => {
-                        const badge = getPresentationBadge(l.product?.uom_name);
+                        const badge = getPresentationBadge(l.uom_name || l.product?.uom_name);
                         return (
                           <tr key={l.id}>
                             <td className="py-2.5 px-3 font-semibold text-slate-800">{l.name}</td>
                             <td className="py-2.5 px-2 text-center">
                               <span className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-[10px] font-black border uppercase tracking-wider ${badge.color}`}>
                                 <span>{badge.icon}</span>
-                                <span>{badge.label}</span>
+                                <span>{l.uom_name || badge.label}</span>
                               </span>
                             </td>
                             <td className="py-2.5 px-3 text-right font-bold">{l.product_uom_qty}</td>
